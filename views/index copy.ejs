@@ -23,9 +23,6 @@
     <div>
       <a href="/upload">Bild hochladen</a>
     </div>
-
-  
-
     <div>
       <% if (auctions.length > 0) { %>
         <% auctions.forEach(auc => { %>
@@ -33,12 +30,16 @@
             
             <h3><%= auc.titel %></h3>
             <h3><%= auc.startbit %></h3>
-            <a href="http://localhost:5000/au/" <%= auc.uuid %>></a>
+        
+            <a href="http://localhost:5000/au/<%= auc.uuid%>">
             <img class="resize" src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
+            </a>
           </div>
         <% }) %>
 
         <% } %>
     </div>
+
+
 </body>
 </html>

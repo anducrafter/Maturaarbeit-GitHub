@@ -62,6 +62,7 @@ app.get("/au/:id",async (req,res) =>{
     
     try{
         const auction = await auctioncollection.find({uuid: req.params.id});
+        
         res.render('index', { auctions: auction });
         console.log("tset")
     }catch(err){
@@ -83,8 +84,8 @@ app.get("/", async (req, res) => {
 
   //Dieses zeug hier hat funktioniert also 
   
-  try{
-  
+ // try{
+  /*
    const auction = await auctioncollection.find({});
    const imagess = []
    auction.forEach(element => {
@@ -96,16 +97,16 @@ app.get("/", async (req, res) => {
   }catch(err){
     console.log(err)
   }
-  /*
-
+  */
   
+
+  try{
   const auction = await auctioncollection.find({});
-   const au = []
-   auction.forEach(element => {
-    au.push(element.img);
-   });
-   res.render('index', { auctions: au });
-   */
+ 
+   res.render('index copy', { auctions: auction });
+}catch(err){
+    console.log(err)
+}
 
 });
 
