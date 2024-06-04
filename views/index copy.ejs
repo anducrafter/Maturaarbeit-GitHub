@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+      .resize {
+    width: 400px;
+    height: auto;
+}
+
+.resize {
+    width: 300px;
+    height: auto;
+}
+
+
+    </style>
+</head>
+<body>
+    <h1>Auktionen</h1>
+    <div>
+      <a href="/upload">Bild hochladen</a>
+    </div>
+
+  
+
+    <div>
+      <% if (auctions.length > 0) { %>
+        <% auctions.forEach(auc => { %>
+          <div>
+            
+            <h3><%= auc.titel %></h3>
+            <h3><%= auc.startbit %></h3>
+            <a href="http://localhost:5000/au/" <%= auc.uuid %>></a>
+            <img class="resize" src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
+          </div>
+        <% }) %>
+
+        <% } %>
+    </div>
+</body>
+</html>
