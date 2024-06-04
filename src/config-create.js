@@ -8,11 +8,16 @@ connect.then(() =>{
 })
 
 const createSchema = new mongoose.Schema({
-    
+    creator:{
+        type: String,
+    },
     uuid:{
         type: String,
     },
     titel:{
+        type: String,
+    },
+    biter:{
         type: String,
     },
     description:{

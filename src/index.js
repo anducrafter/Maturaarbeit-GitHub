@@ -146,7 +146,7 @@ function uuidv4() {
         return v.toString(16);
     });
 }
-app.post("/create", upload.single("image"), async (req,res) =>{
+app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
     try {
         //Save image in database
         const data = {
@@ -159,13 +159,13 @@ app.post("/create", upload.single("image"), async (req,res) =>{
         const aution = new auctioncollection();
         aution.uuid = uuidv4();
         aution.titel = data.titel;
-        aution.description = data.description
-        aution.startbit = data.startbit
-        console.log(aution.test)
+        aution.description = data.description;
+        console.log(req.session.user)
+        aution.startbit = data.startbit;
+        aution.creator = req.session.user;
+        aution.biter = "";
         aution.img.data = fs.readFileSync(path.join(uploadDir, req.file.filename));
         aution.img.contentType = "imga/png";
-     
-       
         aution.save().then(() =>{
             console.log("Bild hochgleaden")
         }).catch((err) =>{
@@ -173,9 +173,6 @@ app.post("/create", upload.single("image"), async (req,res) =>{
             console.log("wieso geht der scheiss ned")
         })
         //Save now open auction in database
-      
-
-
        
     }catch(err){
         console.log(err)
