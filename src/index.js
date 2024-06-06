@@ -59,18 +59,34 @@ app.get("/uploade",(req,res) =>{
 
 app.get("/au/:id",async (req,res) =>{
    
-    
     try{
+
         const auction = await auctioncollection.find({uuid: req.params.id});
+        res.render('index', { auctions: auction, id: req.params.id });
         
-        res.render('index', { auctions: auction });
-        console.log("tset")
     }catch(err){
         console.log(err)
     }
     
 })
+app.post("/au/43e29016-3ecc-43b0-a043-53e9cd86d18a") ,async(req,res) =>{
+ console.log("test");
+ /*try{
+    const auction = await auctioncollection.find({uuid: req.params.id});
+const bit = auction.startbit;
+const newbit = req.body.newbit;
+if(newbit > bit){
+ const biter =  auction.biter;
+ const newbiter = req.session.user;
+    const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {bit: newbit, biter: newbiter}})
+}
 
+
+}catch(err){
+console.log(err)
+}*/
+
+}
 
 app.get("/", async (req, res) => {
   /*  try {
@@ -154,6 +170,7 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
             titel: req.body.titel,
             description: req.body.description
         }
+        
 
        
         const aution = new auctioncollection();
@@ -166,6 +183,10 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
         aution.biter = "";
         aution.img.data = fs.readFileSync(path.join(uploadDir, req.file.filename));
         aution.img.contentType = "imga/png";
+
+
+       
+       
         aution.save().then(() =>{
             console.log("Bild hochgleaden")
         }).catch((err) =>{
@@ -256,5 +277,3 @@ const port = 5000
 app.listen(port, () =>{
     console.log('Server is running on Port:',port);
 })
-
-

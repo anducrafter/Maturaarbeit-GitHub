@@ -15,9 +15,13 @@
       <% if (auctions.length > 0) { %>
         <% auctions.forEach(auc => { %>
           <div>
-            <h2>Test auktion</h2>
             <h3><%= auc.description %></h3>
+            <form action="/au/43e29016-3ecc-43b0-a043-53e9cd86d18a" method="post">
+              <input type="number" name="newbit" min="<%= auc.startbit+1%>" placeholder="<%= auc.startbit%>">
+              <button type="submit">Bieten neu</button>
+            </form>
             <h3><%= auc.startbit %></h3>
+            
             <img src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
           </div>
         <% }) %>
