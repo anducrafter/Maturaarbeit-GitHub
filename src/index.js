@@ -52,8 +52,7 @@ app.use(express.urlencoded({ extended: false }));
 
 const usermanager = []
 
-app.get("/uploade",(req,res) =>{
-   
+app.get("/test",(req,res) =>{
     res.render("test")
 })
 
@@ -69,24 +68,7 @@ app.get("/au/:id",async (req,res) =>{
     }
     
 })
-app.post("/au/43e29016-3ecc-43b0-a043-53e9cd86d18a") ,async(req,res) =>{
- console.log("test");
- /*try{
-    const auction = await auctioncollection.find({uuid: req.params.id});
-const bit = auction.startbit;
-const newbit = req.body.newbit;
-if(newbit > bit){
- const biter =  auction.biter;
- const newbiter = req.session.user;
-    const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {bit: newbit, biter: newbiter}})
-}
 
-
-}catch(err){
-console.log(err)
-}*/
-
-}
 
 app.get("/", async (req, res) => {
   /*  try {
@@ -162,6 +144,27 @@ function uuidv4() {
         return v.toString(16);
     });
 }
+
+app.post("/au/:id", isAuthenticated, async(req,res) =>{
+    
+    try{
+       const auction =  await auctioncollection.findOne({uuid: req.params.id});
+     const bit = auction.startbit;
+     const newbit = req.body.newbit;
+  
+   if(newbit > bit){
+    const biter =  auction.biter;
+    const newbiter = req.session.user;
+       const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {startbit: newbit, biter: newbiter}})
+       res.redirect("/au/"+ req.params.id)
+   }
+   
+   
+   }catch(err){
+   console.log(err)
+   }
+   
+});
 app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
     try {
         //Save image in database
@@ -180,6 +183,9 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
         console.log(req.session.user)
         aution.startbit = data.startbit;
         aution.creator = req.session.user;
+        const date = new Date();
+        
+        aution.timestamp = date.getTime()+1000 * 60 * 60;
         aution.biter = "";
         aution.img.data = fs.readFileSync(path.join(uploadDir, req.file.filename));
         aution.img.contentType = "imga/png";
@@ -203,22 +209,7 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
   
 })
 
-app.post("/uploade", upload.single("image"),(req,res) =>{
 
-    console.log('Body:', req.body);
-  console.log('File:', req.file);
-    const imga = new imgcollection();
-    imga.name = req.file.name;
-    imga.img.data = fs.readFileSync(path.join(uploadDir, req.file.filename));
-    imga.img.contentType = "imga/png";
-    imga.save().then(() =>{
-        console.log("Bild hochgleaden")
-    }).catch((err) =>{
-        console.log(err);
-        console.log("wieso geht der scheiss ned")
-    })
-    res.send("Bilder hochgeladen")
-})
 
 //Regestrieren
 app.post("/register",async (req,res) =>{
@@ -263,7 +254,7 @@ app.post("/login" ,async (req,res) =>{
         if(passwordis){
            
             req.session.user = user.name;
-            res.redirect("home")
+            res.redirect("/")
         }else{
             res.send("Falsches Passwort")
         }

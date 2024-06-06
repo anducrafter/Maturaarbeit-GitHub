@@ -5,21 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
-<body>
-    <h1>Galerie</h1>
-    <div>
-      <a href="/upload">Bild hochladen</a>
-    </div>
 
+<body>
+    <h1>Auktion</h1>
+    
+    <script>
+      let timeLeft = 10;
+      const timerElement = document.getElementById('timer');
+  
+      const countdown = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          timerElement.innerText = "Time's up!";
+        } else {
+          timerElement.innerText = timeLeft;
+        }
+        timeLeft -= 1;
+      }, 1000);
+  </script>
     <div>
       <% if (auctions.length > 0) { %>
-        <% auctions.forEach(auc => { %>
+        <% auctions.forEach(auc => { %> 
           <div>
             <h3><%= auc.description %></h3>
-            <form action="/au/43e29016-3ecc-43b0-a043-53e9cd86d18a" method="post">
+            <form action="/au/<%=auc.uuid%>" method="post">
               <input type="number" name="newbit" min="<%= auc.startbit+1%>" placeholder="<%= auc.startbit%>">
               <button type="submit">Bieten neu</button>
             </form>
+            <div id="timer"><%=auc.timestamp- new Date %></div>
             <h3><%= auc.startbit %></h3>
             
             <img src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">

@@ -17,6 +17,9 @@ const createSchema = new mongoose.Schema({
     titel:{
         type: String,
     },
+    timestamp:{
+        type: Number,
+    },
     biter:{
         type: String,
     },
