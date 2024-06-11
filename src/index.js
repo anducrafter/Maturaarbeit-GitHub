@@ -65,7 +65,7 @@ app.get("/au/:id",async (req,res) =>{
     try{
 
         const auction = await auctioncollection.find({uuid: req.params.id});
-        res.render('index', { auctions: auction, id: req.params.id });
+        res.render('auction', { auctions: auction, id: req.params.id });
         
     }catch(err){
         console.log(err)
@@ -105,7 +105,7 @@ app.get("/", async (req, res) => {
   try{
   const auction = await auctioncollection.find({});
  
-   res.render('index copy', { auctions: auction });
+   res.render('index', { auctions: auction });
 }catch(err){
     console.log(err)
 }
@@ -169,13 +169,16 @@ app.post("/au/:id", isAuthenticated, async(req,res) =>{
     const biter =  auction.biter;
     const newbiter = req.session.user;
     const history = auction.bithistory;
-    history.push({name: biter, bit: bit})
+    history.push({name: req.session.user, bit: bit})
     
     if(auction.timestamp <= Date.now()+300000){
        auction.timestamp+= 180000; //füge noch 3 Minuten hinzu
     }
        const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {startbit: newbit, biter: newbiter, bithistory: history, timestamp: auction.timestamp}})
-       
+       const user = await collection.findOne({name: req.session.user})
+      const userauction =  user.auctions;
+      userauction.push(req.params.id)
+      await collection.updateOne({name: req.session.user}, {$set : {auctions: userauction}})
        res.redirect("/au/"+ req.params.id)
    }
    
@@ -191,7 +194,8 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
         const data = {
             startbit: req.body.startbit,
             titel: req.body.titel,
-            description: req.body.description
+            description: req.body.description,
+            time: req.body.time
         }
         
 
@@ -206,7 +210,7 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
         aution.bithistory = []
         const date = new Date();
         
-        aution.timestamp = date.getTime()+1000 * 60 * 60;
+        aution.timestamp = date.getTime()+1000 * 60 * 60 * 24 *data.time;
         aution.biter = "";
         aution.img.data = fs.readFileSync(path.join(uploadDir, req.file.filename));
         aution.img.contentType = "imga/png";

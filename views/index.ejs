@@ -3,60 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auktion</title>
-    <link  rel="stylesheet" href="/src/public/css/auction.css">
-</head>
+    <title>Document</title>
+    <link  rel="stylesheet" href="/src/public/css/index.css">
 
+    <script> 
+      function timeleft(milliseconds,uuid) {
+        milliseconds = parseInt(milliseconds);
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                if(milliseconds - Date.now() <= 0)return "Auktion beendet am " + new Date((milliseconds)).toLocaleDateString(undefined,options);
+              
+                if ( milliseconds - Date.now() > 86400000) return new Date(milliseconds).toLocaleDateString(undefined, options);
+
+                const now = Date.now();
+                const remainingTime = milliseconds - now;
+                let h = Math.floor(remainingTime / 3600000);
+                let m = Math.floor((remainingTime % 3600000) / 60000);
+                let s = Math.floor((remainingTime % 60000) / 1000);
+                return `${h} Stunden ${m} Minuten ${s} Sekunden`;
+            }
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            function setTime(milliseconds,uuid){
+              const countdown = setInterval(() => {
+                const timerElement = document.getElementById(`timer-`+uuid);
+                if ((milliseconds - Date.now()) < 0) {
+                          clearInterval(countdown);
+                          timerElement.innerText = timeleft(milliseconds,uuid)
+                      }
+              
+              timerElement.innerText =timeleft(milliseconds,uuid)
+              },1000);
+            }
+      </script>
+</head>
 <body>
-    <h1>Auktion</h1>
+
+  <header>
+    <h2>Willkommen auf repli.ch</h2>
+    <nav>
+      <a href="login">login</a>
+      <a href="register">register</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Auktionen</h1>
+    <div class="upload-link">
+      <a href="create">Auktion erstellen</a>
+    </div>
     <div class="auction-cards">
       <% if (auctions.length > 0) { %>
-        <% auctions.forEach(auc => { %> 
+        <% auctions.forEach(auc => { %>
           <div class="card">
-            <img src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
-            <div class="card-content">
-              <h3><%= auc.description %></h3>
-              <form action="/au/<%=auc.uuid%>" method="post">
-                <input type="number" name="newbit" min="<%= auc.startbit + 1 %>" placeholder="<%= auc.startbit %>">
-                <button type="submit">Bieten neu</button>
-              </form>
-              <div class="timer" id="timer-<%= auc.uuid %>">Time left:
-                <script>
-                  function timeleft(milliseconds) {
-                      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                      if (Date.now() - milliseconds > 86400000) return new Date(milliseconds).toLocaleDateString(undefined, options);
-
-                      const now = Date.now();
-                      const remainingTime = milliseconds - now;
-                      let h = Math.floor(remainingTime / 3600000);
-                      let m = Math.floor((remainingTime % 3600000) / 60000);
-                      let s = Math.floor((remainingTime % 60000) / 1000);
-                      return `${h} Stunden ${m} Minuten ${s} Sekunden`;
-                  }
-
-                  let time = '<%= auc.timestamp %>';
-                  const timerElement = document.getElementById(`timer-<%= auc.uuid %>`);
-                  const countdown = setInterval(() => {
-                      if ((time - Date.now()) <= 0) {
-                          clearInterval(countdown);
-                          timerElement.innerText = "Auktion fertig";
-                      } else {
-                          timerElement.innerText = "Time left: " + timeleft(time);
-                      }
-                  }, 1000);
-                </script>
-              </div>
-              <h4>Startgebot: <%= auc.startbit %></h4>
-              <% auc.bithistory.forEach(history => { %>
-                <h4><%= history.name%></h4>
-                <h3><%= history.bit%></h3>
-             <% }) %>
-            </div>
+            
+            <a href="http://localhost:5000/au/<%= auc.uuid%>">
+              <img class="resize" src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
+            </a>
+            <h3><%= auc.titel %></h3>
+            <h4>Startgebot: <%= auc.startbit %></h4>
+            <h5 id="timer-<%= auc.uuid %>"> 
+              <script>
+                setTime(" <%= auc.timestamp %>","<%= auc.uuid %>")
+              </script>
+            </h5>
+            
           </div>
         <% }) %>
-      <% } else { %>
-        <p>Keine Bilder gefunden</p>
       <% } %>
     </div>
+  </main>
+
 </body>
 </html>

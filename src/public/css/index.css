@@ -13,7 +13,7 @@ body {
 
 /* Header styling */
 header {
-    background-color: #007BFF;
+    background-color: #4CAF50;
     color: #fff;
     padding: 20px;
     text-align: center;
@@ -48,7 +48,7 @@ main {
 }
 
 .upload-link a {
-    background-color: #007BFF;
+     background-color: #4CAF50;
     color: #fff;
     padding: 10px 20px;
     text-decoration: none;
@@ -57,7 +57,7 @@ main {
 }
 
 .upload-link a:hover {
-    background-color: #0056b3;
+    background-color: #4CAF50;
 }
 
 /* Auction cards styling */

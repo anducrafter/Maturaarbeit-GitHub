@@ -23,7 +23,7 @@ const LoginShema = new mongoose.Schema({
      
     },
     auctions:{
-        type: Object,
+        type: Array,
        
      
     },

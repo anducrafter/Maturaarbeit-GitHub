@@ -4,15 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link  rel="stylesheet" href="/src/public/css/create.css">
 </head>
 <body>
+    <header>
+        <h2>Repli.ch</h2>
+        <nav>
+          <a href="./">Hauptseite</a>
+        </nav>
+      </header>
     <form action="/create" method="POST" enctype="multipart/form-data">
+        <h2>Bild</h2>
         <input type="file" name="image">
-        <input type="number" name="startbit">
+        <h2>Startbit</h2>
+        <input type="number" min="1" max="1000000" name="startbit">
+        <h2>Laufzeit</h2>
+        <input type="number" min="7" max="14" name="time" id="time">
+        <h2>Titel</h2>
         <input type="text" name="titel" id="titel">
+        <h2>Beschreibung</h2>
         <input type="text" name="description" id="">
         <input type="submit" value="Upload">
-        <button type="submit">Absenden</button>
+        
       </form>
 </body>
 </html>
