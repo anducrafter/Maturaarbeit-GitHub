@@ -35,7 +35,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {secure: false}
-}));
+})); 
 
 //Viw engine test
 
@@ -46,7 +46,11 @@ app.set("view engine","ejs")
 
 app.use(express.json());
 
-app.use(express.static("public"));
+//habe es mal rausgenommen wegen dem css
+//app.use(express.static("public"));
+
+
+
 app.use(express.urlencoded({ extended: false }));
 
 
@@ -109,9 +113,6 @@ app.get("/", async (req, res) => {
 });
 
 
-app.get("/home",isAuthenticated,(req,res) =>{
-    res.render("home", {testid: req.session.user});
-})
 
 app.get("/login", (req,res) =>{
     res.render("login");
@@ -125,8 +126,18 @@ app.get("/create", (req,res) =>{
     res.render("uploade");
 })
 
-
-
+//Ist ein proversorium um css zu laden
+app.get("/src/public/css/:id",(req,res) =>{
+    fs.readFile(__dirname + '/public/css/'+req.params.id, function (err, data) {
+        if (err) console.log(err);
+        res.writeHead(200, {'Content-Type': 'text/css'});
+        res.write(data);
+        res.end();
+      });
+      
+})
+//Wieso geht das ned ?
+app.use(express.static(path.join(__dirname+ "/public/css/sign.css")));
 
 function isAuthenticated(req, res, next) {
     if (req.session.user) {
@@ -149,13 +160,22 @@ app.post("/au/:id", isAuthenticated, async(req,res) =>{
     
     try{
        const auction =  await auctioncollection.findOne({uuid: req.params.id});
+       if(auction.timestamp <= Date.now()){ res.send("auction schon vorbei"); return;}
+       
      const bit = auction.startbit;
      const newbit = req.body.newbit;
   
    if(newbit > bit){
     const biter =  auction.biter;
     const newbiter = req.session.user;
-       const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {startbit: newbit, biter: newbiter}})
+    const history = auction.bithistory;
+    history.push({name: biter, bit: bit})
+    
+    if(auction.timestamp <= Date.now()+300000){
+       auction.timestamp+= 180000; //füge noch 3 Minuten hinzu
+    }
+       const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {startbit: newbit, biter: newbiter, bithistory: history, timestamp: auction.timestamp}})
+       
        res.redirect("/au/"+ req.params.id)
    }
    
@@ -183,6 +203,7 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
         console.log(req.session.user)
         aution.startbit = data.startbit;
         aution.creator = req.session.user;
+        aution.bithistory = []
         const date = new Date();
         
         aution.timestamp = date.getTime()+1000 * 60 * 60;
@@ -214,25 +235,30 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
 //Regestrieren
 app.post("/register",async (req,res) =>{
     try {
+        const obj = []
     const data = {
         name: req.body.username,
-        password: req.body.password
+        password: req.body.password,
+        email: req.body.email,
+        auctions: obj ,
+        bewertung: 5
+
     }
-   const existuser = await collection.findOne({name: data.name})
-   if(existuser){
-    res.send("Bitte andere Namen angeben")
+   const username = await collection.findOne({name: data.name})
+   const email = await collection.findOne({email: data.email})
+   if(username || email ){
+    res.send("Bitte gib ein anderen username oder passwort an")
    }else{
     const hasedPassword = await bycript.hash(data.password,9);
     data.password = hasedPassword;
     const userdata = await collection.insertMany(data);
-    console.log(data)
+   
     res.send("Erfolgreich User erstellt!")
    }
    
 }catch(err){
     console.log(err)
-    console
-    .log("ERROR, wieso geht mongodb nicht?")
+   
 }
 
 });
@@ -264,7 +290,10 @@ app.post("/login" ,async (req,res) =>{
     }
 })
 
+
+
 const port = 5000
 app.listen(port, () =>{
+    console.log((path.join(__dirname,"public")))
     console.log('Server is running on Port:',port);
 })

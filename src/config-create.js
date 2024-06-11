@@ -23,6 +23,9 @@ const createSchema = new mongoose.Schema({
     biter:{
         type: String,
     },
+    bithistory:{
+        type: Array,
+    },
     description:{
         type: String,
     },

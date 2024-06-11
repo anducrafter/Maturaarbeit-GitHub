@@ -17,6 +17,21 @@ const LoginShema = new mongoose.Schema({
        
      
     },
+    email:{
+        type: String,
+       
+     
+    },
+    auctions:{
+        type: Object,
+       
+     
+    },
+    bewertung:{
+        type: Number,
+       
+     
+    },
     password:{
     type:String,
    

@@ -9,20 +9,7 @@
 <body>
     <h1>Auktion</h1>
     
-    <script>
-      let timeLeft = 10;
-      const timerElement = document.getElementById('timer');
-  
-      const countdown = setInterval(() => {
-        if (timeLeft <= 0) {
-          clearInterval(countdown);
-          timerElement.innerText = "Time's up!";
-        } else {
-          timerElement.innerText = timeLeft;
-        }
-        timeLeft -= 1;
-      }, 1000);
-  </script>
+   
     <div>
       <% if (auctions.length > 0) { %>
         <% auctions.forEach(auc => { %> 
@@ -32,7 +19,56 @@
               <input type="number" name="newbit" min="<%= auc.startbit+1%>" placeholder="<%= auc.startbit%>">
               <button type="submit">Bieten neu</button>
             </form>
-            <div id="timer"><%=auc.timestamp- new Date %></div>
+            <div id="timer">Time left:
+            
+              <script>
+
+function addMillisecondsToCurrentTime(milliseconds) {
+    // Get the current time in milliseconds
+    var currentTimeInMillis = Date.now();
+
+    // Calculate the future time in milliseconds
+    var futureTimeInMillis = currentTimeInMillis + milliseconds;
+
+    // Create Date objects for the current and future times
+   
+    var futureDate = new Date(futureTimeInMillis);
+
+    // Format the dates
+    var options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+   return  futureDate.toLocaleDateString(undefined, options);
+}
+   function timeleft(milliseconds){
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    if(Date.now()-milliseconds > 86400000)return new Date(milliseconds).toLocaleDateString(undefined, options);
+               
+                  const now = Date.now();
+                  const remainingTime = milliseconds - now;
+                let h = Math.floor(remainingTime / 3600000);
+                let m = Math.floor((remainingTime % 3600000) / 60000);
+                let s = Math.floor((remainingTime % 60000) / 1000);
+                return h+" Stunden"+m+" Minuten"+s+" Sekunden";
+
+             
+   }
+                let time ='<%=auc.timestamp %>'
+               
+                const timerElement = document.getElementById('timer');
+            
+                const countdown = setInterval(() => {
+                  if ((time - Date.now()) <= 0) {
+                    clearInterval(countdown);
+                    timerElement.innerText = "Auktion fertig";
+                  } else {
+                    timerElement.innerText =  timeleft(time)
+                  }
+                
+                }, 1000);
+                
+            //   timeleft('<%=auc.timestamp %>');
+         
+            </script>
+            </div>
             <h3><%= auc.startbit %></h3>
             
             <img src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
