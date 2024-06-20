@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auktion</title>
+    <link  rel="stylesheet" href="/src/public/css/auction.css">
+</head>
+
+<body>
+    <h1>Auktion</h1>
+    <div class="auction-cards">
+      <% if (auctions.length > 0) { %>
+        <% auctions.forEach(auc => { %> 
+          <div class="card">
+            <img src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
+            <div class="card-content">
+              <h3><%= auc.description %></h3>
+              <form action="/au/<%=auc.uuid%>" method="post">
+                <input type="number" name="newbit" min="<%= auc.startbit + 1 %>" placeholder="<%= auc.startbit %>" required>
+                <button type="submit">Bieten neu</button>
+              </form>
+              <div class="timer" id="timer-<%= auc.uuid %>">Time left:
+                <script>
+                  function timeleft(milliseconds) {
+                    milliseconds = parseInt(milliseconds)
+                      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                      if (milliseconds - Date.now()   > 86400000) return "Endet am "+ new Date(milliseconds).toLocaleDateString(undefined, options);
+
+                      const now = Date.now();
+                      const remainingTime = milliseconds - now;
+                      let h = Math.floor(remainingTime / 3600000);
+                      let m = Math.floor((remainingTime % 3600000) / 60000);
+                      let s = Math.floor((remainingTime % 60000) / 1000);
+                      return "Endet in "+`${h} Stunden ${m} Minuten ${s} Sekunden`;
+                  }
+
+                  let time = '<%= auc.timestamp %>';
+                  const timerElement = document.getElementById(`timer-<%= auc.uuid %>`);
+                  const countdown = setInterval(() => {
+                      if ((time - Date.now()) <= 0) {
+                          clearInterval(countdown);
+                          timerElement.innerText = "Auktion fertig";
+                      } else {
+                          timerElement.innerText =  timeleft(time);
+                      }
+                  }, 1000);
+                </script>
+              </div>
+              <h4>Startgebot: <%= auc.startbit %></h4>
+              <% auc.bithistory.forEach(history => { %>
+                <h4><%= history.name%></h4>
+                <h3><%= history.bit%></h3>
+             <% }) %>
+            </div>
+          </div>
+        <% }) %>
+      <% } else { %>
+        <p>Keine Bilder gefunden</p>
+      <% } %>
+    </div>
+</body>
+</html>

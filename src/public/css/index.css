@@ -69,6 +69,7 @@ main {
 }
 
 .card {
+    
     background: #fff;
     padding: 20px;
     border-radius: 8px;
@@ -92,6 +93,7 @@ main {
     height: auto;
     border-radius: 5px;
     transition: transform 0.3s;
+   
 }
 
 .card img:hover {

@@ -56,9 +56,10 @@ app.use(express.urlencoded({ extended: false }));
 
 const usermanager = []
 
-app.get("/test",(req,res) =>{
-    res.render("test")
-})
+
+//Wieso geht das ned ?
+app.use(express.static(path.join(__dirname+ "/public/css/sign.css")));
+
 
 app.get("/au/:id",async (req,res) =>{
    
@@ -100,7 +101,6 @@ app.get("/", async (req, res) => {
     console.log(err)
   }
   */
-  
 
   try{
   const auction = await auctioncollection.find({});
@@ -136,8 +136,7 @@ app.get("/src/public/css/:id",(req,res) =>{
       });
       
 })
-//Wieso geht das ned ?
-app.use(express.static(path.join(__dirname+ "/public/css/sign.css")));
+
 
 function isAuthenticated(req, res, next) {
     if (req.session.user) {
@@ -169,7 +168,7 @@ app.post("/au/:id", isAuthenticated, async(req,res) =>{
     const biter =  auction.biter;
     const newbiter = req.session.user;
     const history = auction.bithistory;
-    history.push({name: req.session.user, bit: bit})
+    history.push({name: req.session.user, bit: newbit})
     
     if(auction.timestamp <= Date.now()+300000){
        auction.timestamp+= 180000; //füge noch 3 Minuten hinzu
@@ -177,7 +176,9 @@ app.post("/au/:id", isAuthenticated, async(req,res) =>{
        const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {startbit: newbit, biter: newbiter, bithistory: history, timestamp: auction.timestamp}})
        const user = await collection.findOne({name: req.session.user})
       const userauction =  user.auctions;
-      userauction.push(req.params.id)
+      if(!userauction.get(req.params.id)){
+      userauction.push(req.params.id)}
+      
       await collection.updateOne({name: req.session.user}, {$set : {auctions: userauction}})
        res.redirect("/au/"+ req.params.id)
    }
@@ -197,17 +198,14 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
             description: req.body.description,
             time: req.body.time
         }
-        
-
-       
         const aution = new auctioncollection();
         aution.uuid = uuidv4();
         aution.titel = data.titel;
         aution.description = data.description;
-        console.log(req.session.user)
         aution.startbit = data.startbit;
         aution.creator = req.session.user;
         aution.bithistory = []
+        aution.categorique = []
         const date = new Date();
         
         aution.timestamp = date.getTime()+1000 * 60 * 60 * 24 *data.time;
@@ -216,13 +214,17 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
         aution.img.contentType = "imga/png";
 
 
-       
-       
         aution.save().then(() =>{
-            console.log("Bild hochgleaden")
+           
+            const user =  collection.findOne({name: req.session.user})
+            const userauction =  user.create
+            userauction.push(aution.uuid);
+            
+             collection.updateOne({name: req.session.user}, {$set : {create: userauction}})
+             console.log(userauction);
         }).catch((err) =>{
             console.log(err);
-            console.log("wieso geht der scheiss ned")
+            console.log("Fehler beim Auction in databank Speichern")
         })
         //Save now open auction in database
        
@@ -239,7 +241,7 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
 //Regestrieren
 app.post("/register",async (req,res) =>{
     try {
-        const obj = []
+       
     const data = {
         name: req.body.username,
         password: req.body.password,
@@ -298,6 +300,6 @@ app.post("/login" ,async (req,res) =>{
 
 const port = 5000
 app.listen(port, () =>{
-    console.log((path.join(__dirname,"public")))
+  
     console.log('Server is running on Port:',port);
 })

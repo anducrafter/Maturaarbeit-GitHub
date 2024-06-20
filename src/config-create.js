@@ -32,6 +32,9 @@ const createSchema = new mongoose.Schema({
     startbit:{
         type: Number,
     },
+    categorique:{
+        type: Array,
+    },
     img:{
         data: Buffer,
         contentType: String,
