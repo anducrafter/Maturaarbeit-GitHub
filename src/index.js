@@ -175,11 +175,18 @@ app.post("/au/:id", isAuthenticated, async(req,res) =>{
     }
        const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {startbit: newbit, biter: newbiter, bithistory: history, timestamp: auction.timestamp}})
        const user = await collection.findOne({name: req.session.user})
-      const userauction =  user.auctions;
-      if(!userauction.get(req.params.id)){
-      userauction.push(req.params.id)}
+       const at  =user.auctions
+     
+     if(user.auctions == ""){
+        user.auctions.push(req.params.id);
+     }else if(at.prototype.values()){
+        user.auctions.push(req.params.id);
+        console.log(at)
+     }
+  
+       
       
-      await collection.updateOne({name: req.session.user}, {$set : {auctions: userauction}})
+      await collection.updateOne({name: req.session.user}, {$set : {auctions:  user.auctions}})
        res.redirect("/au/"+ req.params.id)
    }
    
@@ -218,7 +225,9 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
            
             const user =  collection.findOne({name: req.session.user})
             const userauction =  user.create
+           
             userauction.push(aution.uuid);
+        
             
              collection.updateOne({name: req.session.user}, {$set : {create: userauction}})
              console.log(userauction);
@@ -246,7 +255,8 @@ app.post("/register",async (req,res) =>{
         name: req.body.username,
         password: req.body.password,
         email: req.body.email,
-        auctions: obj ,
+        auctions: new Array(),
+        create: new Array(),
         bewertung: 5
 
     }
