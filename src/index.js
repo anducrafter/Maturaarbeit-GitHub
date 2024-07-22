@@ -6,6 +6,7 @@ const imgcollection = require("./config-img")
 const auctioncollection = require("./config-create")
 const path = require('path');
 const fs = require('fs');
+const nodemailer = require("nodemailer");
 const session = require("express-session");
 const { sign } = require("crypto");
 
@@ -61,12 +62,55 @@ const usermanager = []
 app.use(express.static(path.join(__dirname+ "/public/css/sign.css")));
 
 
+//Node emailer
+const transporter = nodemailer.createTransport({
+    //service: "gmail",
+    host: "smtp.freesmtpservers.com",
+    port: 25,
+    secure: false, // Use `true` for port 465, `false` for all other ports
+   
+  });
+
+  const mailOption = {
+    from: {
+        name: "anducrafter",
+        address: "buisnesserwan@gmail.com"
+    },
+    to: "andusucht@gmail.com",
+    subject: "Hello how are you?",
+    text: "Hello world",
+    html: "<h1> My fist sending email </h1>"
+  }
+
+  const sendMail = async (transporter,mailOption) =>{
+    try{
+        await transporter.sendMail(mailOption);
+        console.log("Email sended succecfully")
+    }catch (err){
+        console.log(err)
+    }
+  }
+  
 app.get("/au/:id",async (req,res) =>{
    
     try{
 
         const auction = await auctioncollection.find({uuid: req.params.id});
         res.render('auction', { auctions: auction, id: req.params.id });
+        
+    }catch(err){
+        console.log(err)
+    }
+    
+})
+
+
+app.get("/category/:id",async (req,res) =>{
+   
+    try{
+
+        const auction = await auctioncollection.find({categorique: req.params.id});
+        res.render('category', { auctions: auction, id: req.params.id });
         
     }catch(err){
         console.log(err)
@@ -103,7 +147,7 @@ app.get("/", async (req, res) => {
   */
 
   try{
-  const auction = await auctioncollection.find({});
+  const auction =  await auctioncollection.find({});
  
    res.render('index', { auctions: auction });
 }catch(err){
@@ -203,7 +247,8 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
             startbit: req.body.startbit,
             titel: req.body.titel,
             description: req.body.description,
-            time: req.body.time
+            time: req.body.time,
+            categorique: req.body.options
         }
         const aution = new auctioncollection();
         aution.uuid = uuidv4();
@@ -212,7 +257,7 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
         aution.startbit = data.startbit;
         aution.creator = req.session.user;
         aution.bithistory = []
-        aution.categorique = []
+        aution.categorique = data.categorique;
         const date = new Date();
         
         aution.timestamp = date.getTime()+1000 * 60 * 60 * 24 *data.time;
@@ -223,14 +268,12 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
 
         aution.save().then(() =>{
            
-            const user =  collection.findOne({name: req.session.user})
-            const userauction =  user.create
+            const user =   collection.findOne({name: req.session.user})
+            var  userauction =  []
+          //  userauction =  [...user.create]
            
-            userauction.push(aution.uuid);
-        
-            
+             userauction.push(aution.uuid);
              collection.updateOne({name: req.session.user}, {$set : {create: userauction}})
-             console.log(userauction);
         }).catch((err) =>{
             console.log(err);
             console.log("Fehler beim Auction in databank Speichern")
@@ -279,6 +322,13 @@ app.post("/register",async (req,res) =>{
 
 });
 
+app.post("/" , async (req, res) =>{
+
+    const search = req.body.search;
+    const auction = await auctioncollection.find({titel: { $regex: "(?-i).*" + search + ".*"}});
+    res.render('search', { auctions: auction });
+});
+
 //Login
 app.post("/login" ,async (req,res) =>{
     try{ 
@@ -312,4 +362,5 @@ const port = 5000
 app.listen(port, () =>{
   
     console.log('Server is running on Port:',port);
+    sendMail(transporter,mailOption)
 })

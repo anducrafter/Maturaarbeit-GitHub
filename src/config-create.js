@@ -33,7 +33,7 @@ const createSchema = new mongoose.Schema({
         type: Number,
     },
     categorique:{
-        type: Array,
+        type: String,
     },
     img:{
         data: Buffer,
