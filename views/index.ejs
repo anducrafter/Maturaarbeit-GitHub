@@ -4,51 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link  rel="stylesheet" href="/src/public/css/index.css">
-
-    <script> 
-      function timeleft(milliseconds,uuid) {
-        milliseconds = parseInt(milliseconds);
-                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                if(milliseconds - Date.now() <= 0)return "Auktion beendet am " + new Date((milliseconds)).toLocaleDateString(undefined,options);
-              
-                if ( milliseconds - Date.now() > 86400000) return new Date(milliseconds).toLocaleDateString(undefined, options);
-                
-                const now = Date.now();
-                const remainingTime = milliseconds - now;
-                let h = Math.floor(remainingTime / 3600000);
-                let m = Math.floor((remainingTime % 3600000) / 60000);
-                let s = Math.floor((remainingTime % 60000) / 1000);
-                return `${h} Stunden ${m} Minuten ${s} Sekunden`;
-            }
-            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            function setTime(milliseconds,uuid){
-              const countdown = setInterval(() => {
-                const timerElement = document.getElementById(`timer-`+uuid);
-                if ((milliseconds - Date.now()) < 0) {
-                          clearInterval(countdown);
-                          timerElement.innerText = timeleft(milliseconds,uuid)
-                      }
-              
-              timerElement.innerText =timeleft(milliseconds,uuid)
-              },1000);
-            }
-         
-      </script>
+   
 </head>
-<body>
+<body class="bg-gray-100">
 
-  <header>
-    <h2>Willkommen auf repli.ch</h2>
-    <nav>
-      <a href="login">login</a>
-      <a href="register">register</a>
-    </nav>
-  </header>
-
- 
-<form action="/" method="POST">
-  <input type="text" name="search" id="search">
+  <%- include('includes/header.ejs') %>
+  <%- include('includes/searchbar.ejs') %>
+  <div class="text-center pt-5 pb-5">
+    <a href="create" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Auktion erstellen</a>
+  </div>
+  
     <!---Hier sollte noch ein JS reinkommen,
       <option value="Antiquitäten & Kunst">Antiquitäten & Kunst</option>
     <option value="Audio, TV & Video">Audio, TV & Video</option>
@@ -62,39 +27,10 @@
     
     
     wo es automatisch bearbeitet wird-->
-  <button>Suchen</button>
-</form>
 
+    <%- include('includes/auctioncard.ejs',auctions) %>
 
-    <a href="/category/Antiquitäten & Kunst">Antiquitäten & Kunst</a>
-    <a href="/category/Audio, TV & Video">Audio, TV & Video</a>
-
-  <main>
-    <h1>Auktionen</h1>
-    <div class="upload-link">
-      <a href="create">Auktion erstellen</a>
-    </div>
-    <div class="auction-cards">
-      <% if (auctions.length > 0) { %>
-        <% auctions.forEach(auc => { %>
-          <div class="card">
-            
-            <a href="http://localhost:5000/au/<%= auc.uuid%>">
-              <img class="resize" src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
-            </a>
-            <h3><%= auc.titel %></h3>
-            <h4>Startgebot: <%= auc.startbit %></h4>
-            <h5 id="timer-<%= auc.uuid %>"> 
-              <script>
-                setTime(" <%= auc.timestamp %>","<%= auc.uuid %>")
-              </script>
-            </h5>
-          
-          </div>
-        <% }) %>
-      <% } %>
-    </div>
-  </main>
+    <%- include('includes/footer.ejs') %>
 
 </body>
 </html>

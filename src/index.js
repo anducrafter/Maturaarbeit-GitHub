@@ -9,7 +9,7 @@ const fs = require('fs');
 const nodemailer = require("nodemailer");
 const session = require("express-session");
 const { sign } = require("crypto");
-
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -91,12 +91,52 @@ const transporter = nodemailer.createTransport({
     }
   }
   
+  app.use(cookieParser());
+
+
+
+
 app.get("/au/:id",async (req,res) =>{
    
     try{
 
+        
         const auction = await auctioncollection.find({uuid: req.params.id});
+       
+        console.log(auction._Id);
         res.render('auction', { auctions: auction, id: req.params.id });
+        
+    }catch(err){
+        console.log(err)
+    }
+    
+})
+
+app.get("/dashboard/auction",  async (req,res) =>{
+   
+    try{
+        const user = await collection.findOne({name: req.session.user})
+        const userauctions = user.create;
+        const auction = await auctioncollection.find({uuid: {$in : userauctions}});
+        console.log(auction)
+        res.render('userauction', { auctions: auction, id: req.params.id });
+        
+    }catch(err){
+        console.log(err)
+    }
+    
+})
+
+app.get("/dashboard/wins",  async (req,res) =>{
+   
+    try{
+        const user = await collection.findOne({name: req.session.user})
+        const userauctions = user.auctions;
+        const timne = new Date().getTime();
+        console.log(timne)
+        const auction = await auctioncollection.find({uuid: {$in : userauctions}, biter: req.session.user, timestamp: {$lt: timne}});
+        console.log(auction)
+        res.render('userauction', { auctions: auction, id: req.params.id });
         
     }catch(err){
         console.log(err)
@@ -108,8 +148,8 @@ app.get("/au/:id",async (req,res) =>{
 app.get("/category/:id",async (req,res) =>{
    
     try{
-
         const auction = await auctioncollection.find({categorique: req.params.id});
+      
         res.render('category', { auctions: auction, id: req.params.id });
         
     }catch(err){
@@ -185,11 +225,14 @@ app.get("/src/public/css/:id",(req,res) =>{
 function isAuthenticated(req, res, next) {
     if (req.session.user) {
         return next();
-    } else {
+    } else if(!req.cookies["login"]) {
+        req.session.user = req.cookie.login
+    }else{
         res.redirect('/login');
         console.log("naa wieso geht der scheiss nd")
     }
 }
+
 function uuidv4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
     .replace(/[xy]/g, function (c) {
@@ -198,7 +241,6 @@ function uuidv4() {
         return v.toString(16);
     });
 }
-
 app.post("/au/:id", isAuthenticated, async(req,res) =>{
     
     try{
@@ -219,18 +261,16 @@ app.post("/au/:id", isAuthenticated, async(req,res) =>{
     }
        const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {startbit: newbit, biter: newbiter, bithistory: history, timestamp: auction.timestamp}})
        const user = await collection.findOne({name: req.session.user})
-       const at  =user.auctions
-     
-     if(user.auctions == ""){
-        user.auctions.push(req.params.id);
-     }else if(at.prototype.values()){
-        user.auctions.push(req.params.id);
-        console.log(at)
+       const at  =user.auctions;
+     if(at == ""){
+        at.push(req.params.id);
+     }else if(!at.includes(req.params.id)){
+        at.push(req.params.id);
+        console.log("tesrt 1")
      }
-  
-       
-      
-      await collection.updateOne({name: req.session.user}, {$set : {auctions:  user.auctions}})
+
+     console.log(at)
+      await collection.updateOne({name: req.session.user}, {$set : {auctions:  at}})
        res.redirect("/au/"+ req.params.id)
    }
    
@@ -240,7 +280,7 @@ app.post("/au/:id", isAuthenticated, async(req,res) =>{
    }
    
 });
-app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
+app.post("/create",  upload.single("image"),isAuthenticated,async (req,res) =>{
     try {
         //Save image in database
         const data = {
@@ -250,6 +290,7 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
             time: req.body.time,
             categorique: req.body.options
         }
+
         const aution = new auctioncollection();
         aution.uuid = uuidv4();
         aution.titel = data.titel;
@@ -258,9 +299,10 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
         aution.creator = req.session.user;
         aution.bithistory = []
         aution.categorique = data.categorique;
-        const date = new Date();
+        const datee = new Date();
         
-        aution.timestamp = date.getTime()+1000 * 60 * 60 * 24 *data.time;
+       // days now in minutes aution.timestamp = date.getTime()+1000 * 60 * 60 * 24 *data.time;
+         aution.timestamp = datee.getTime()+1000 * 60 * data.time;
         aution.biter = "";
         aution.img.data = fs.readFileSync(path.join(uploadDir, req.file.filename));
         aution.img.contentType = "imga/png";
@@ -268,16 +310,19 @@ app.post("/create",  upload.single("image"),isAuthenticated, async (req,res) =>{
 
         aution.save().then(() =>{
            
-            const user =   collection.findOne({name: req.session.user})
-            var  userauction =  []
-          //  userauction =  [...user.create]
            
-             userauction.push(aution.uuid);
-             collection.updateOne({name: req.session.user}, {$set : {create: userauction}})
+        //   await  collection.updateOne({name: req.session.user}, {$set : {create: userauction}})
         }).catch((err) =>{
             console.log(err);
             console.log("Fehler beim Auction in databank Speichern")
         })
+        const user =   await collection.findOne({name: req.session.user});
+        const  userauction = user.create;
+        
+         userauction.push(aution.uuid);
+         console.log(userauction)
+         await  collection.updateOne({name: req.session.user}, {$set : {create: userauction}})
+      //   await collection.updateOne({name: req.session.user}, {$set : {auctions:  at}})
         //Save now open auction in database
        
     }catch(err){
@@ -321,11 +366,15 @@ app.post("/register",async (req,res) =>{
 }
 
 });
+app.get("/test" , async(req,res) =>{
+res.render("test");
+})
 
 app.post("/" , async (req, res) =>{
 
     const search = req.body.search;
-    const auction = await auctioncollection.find({titel: { $regex: "(?-i).*" + search + ".*"}});
+    const auction = await auctioncollection.find({titel: { $regex: "(?i)(.*" + search + ".*)"}});
+    console.log(auction)
     res.render('search', { auctions: auction });
 });
 
@@ -346,7 +395,11 @@ app.post("/login" ,async (req,res) =>{
         if(passwordis){
            
             req.session.user = user.name;
+            res.cookie("login", user.name);
             res.redirect("/")
+            var randomNumber=Math.random().toString();
+            randomNumber=randomNumber.substring(2,randomNumber.length);
+         
         }else{
             res.send("Falsches Passwort")
         }

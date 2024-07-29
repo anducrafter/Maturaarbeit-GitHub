@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <style>
+      header {
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+    </style>
+</head>
+<body>
+   
+  <header class="bg-lime-700 text-white py-5">
+    <div class="container mx-auto px-6 flex flex-wrap items-center justify-between">
+      <div class="text-3xl font-bold">
+        <a href="#">Repli.ch</a>
+      </div>
+      <button class="block lg:hidden text-white focus:outline-none" id="navbar-toggler">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+      
+      <nav class="hidden lg:flex w-full lg:w-auto" id="navbar-menu">
+        <ul class="lg:flex lg:items-center lg:ml-auto space-y-4 lg:space-y-0 lg:space-x-8 text-lg">
+          <li><a href="/" class="hover:text-gray-200">Home</a></li>
+          <li><a href="/login" class="hover:text-gray-200">login</a></li>
+          <li><a href="sign" class="hover:text-gray-200">Regestrieren</a></li>
+       
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+
+
+  <script>
+    document.getElementById('navbar-toggler').addEventListener('click', function () {
+      var menu = document.getElementById('navbar-menu');
+      menu.classList.toggle('hidden');
+    });
+  </script>
+</body>
+</html>

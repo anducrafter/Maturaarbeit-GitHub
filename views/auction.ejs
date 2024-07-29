@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Auktion</title>
     <link  rel="stylesheet" href="/src/public/css/auction.css">
-    <style>
-  
-    </style>
+    
 </head>
 
 <body>
@@ -15,9 +13,9 @@
     <div class="auction-cards">
       <% if (auctions.length > 0) { %>
         <% auctions.forEach(auc => { %> 
-          <img class=".full-screen-img" src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
+         
           <div class="card">
-           
+            <img class=".full-screen-img" src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
             <div class="card-content">
               <h3><%= auc.description %></h3>
               <form action="/au/<%=auc.uuid%>" method="post">
@@ -41,6 +39,7 @@
 
                   let time = '<%= auc.timestamp %>';
                   const timerElement = document.getElementById(`timer-<%= auc.uuid %>`);
+                  
                   const countdown = setInterval(() => {
                       if ((time - Date.now()) <= 0) {
                           clearInterval(countdown);

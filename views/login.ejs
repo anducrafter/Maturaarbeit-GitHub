@@ -6,26 +6,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<link  rel="stylesheet" href="/src/public/css/sign.css">
 
-<body>
-    <div class="form container">
-        <h2>Login</h2>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="form container max-w-md bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-green-500 text-2xl font-bold mb-6">Login</h2>
         <form action="/login" method="post">
-            <div class="form groupe">
-                <label for="name">Name</label>
-                <input type="text" id="username" name="username" placeholder="Enter your name">
+            <div class="form-group mb-4">
+                <label for="username" class="block text-green-500 mb-2">Name</label>
+                <input type="text" id="username" name="username" placeholder="Enter your name" class="w-full p-2 border border-purple-600 rounded-md">
             </div>
-
-            <div class="form groupe">
-                <label for="password">Passwort</label>
-                <input type="text" id="password" name="password" placeholder="Enter your password">
+            <div class="form-group mb-6">
+                <label for="password" class="block text-green-500 mb-2">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" class="w-full p-2 border border-purple-600 rounded-md">
             </div>
-
-            <button type="submit">Login</button>
+            <button type="submit" class="w-full bg-purple-600 text-white py-2 rounded-md hover:bg-purple-700 transition duration-300">Login</button>
         </form>
-        <p>Registrieren <a href="sign.ejs">Regestrieren</a></p>
+        <p class="mt-4 text-center">Noch nicht regestriert? <a href="sign.ejs" class="text-purple-600 hover:underline">Register</a></p>
     </div>
 </body>
 </html>

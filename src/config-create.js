@@ -35,6 +35,9 @@ const createSchema = new mongoose.Schema({
     categorique:{
         type: String,
     },
+    status:{
+        type: String,
+    },
     img:{
         data: Buffer,
         contentType: String,
