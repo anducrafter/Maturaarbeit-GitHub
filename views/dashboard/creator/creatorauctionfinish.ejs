@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="flex flex-col  h-screen"> 
+    <main class="container mx-auto p-4 pl-12">
+    
+        <div class="auction-cards grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center">
+        
+           
+              <div class="card bg-white shadow-md rounded-lg p-3 flex flex-col items-center">
+                <a href="http://localhost:5000/au/<%= auctions._id%>" class="mb-4 w-full">
+                  <div class="w-full h-64  flex items-center justify-center overflow-hidden rounded-lg">
+                    <img class="object-cover w-full h-full" src="/uploads/<%= auc.img[0] %>" alt="<%= auctions.titel %>">
+                  </div>
+                </a>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">  Preis: <%= auctions.startbit %></h3>
+                <h4 class="text-lg text-gray-600 mb-4"><%= auctions.titel %> </h4>
+                <h5 class="text-gray-600" ><%= auctions.description %></h5>
+              </div>
+        </div>
+
+        <h1>Bitte kontaktiere den Käufer um möglichst schnell die Auktion abzuschliessen</h1>
+        <h2><%= buyer.name %></h2>
+        <h2><%= buyer.email %></h2>
+        <p><%= auctions.status== 1 ? "warte auf Bezahlung" : auctions.status== 2 ? "noch zu Liefern" : auctions.status== 3 ? "Gesendet" : "Abgeschlossen" %></p>
+        <form action="<%= auctions._id%>" method="post">
+
+            <% if( auctions.status == 2 ){%>
+                <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full">
+                    Geliefert
+                   </button>
+
+                <% } else if( auctions.status == 1 ) {%>
+                    <h1>Warte auf Bezahlung</h1>
+                    <%} else if( auctions.status == 3 ) {%>
+                        <h1>Auktion ist Geliefert</h1>
+                        <%} else {%>
+
+                            <h1>Auktion ist Abgeschlossen</h1>
+                            <%}%>
+           
+
+            </form>
+      </main>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
+        <ul class="flex flex-wrap -mb-px">
+            <li class="me-2">
+                <a href="/dashboard/offers" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg  <%= type == 'offers' ? 'text-purple-600 border-purple-600 rounded-t-lg active dark:text-purple-500 dark:border-purple-500' : 'hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' %>"><h1>Am Bieten</h1></a>
+            </li>
+            <li class="me-2">
+                <a href="/dashboard/wins" class="inline-block p-4  border-b-2  <%= type == 'wins' ? ' text-purple-600 border-purple-600 rounded-t-lg active dark:text-purple-500 dark:border-purple-500' : 'hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' %>" aria-current="page"><h1>Gewonnen</h1></a>
+            </li>
+            <li class="me-2">
+                <a href="/dashboard/auctions" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg  <%= type == 'auctions' ? 'text-purple-600 border-purple-600 rounded-t-lg active dark:text-purple-500 dark:border-purple-500' : 'hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' %>"><h1>Am Verkaufen</h1></a>
+            </li>
+            <li class="me-2">
+                <a href="/dashboard/sell" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg  <%= type == 'sell' ? 'text-purple-600 border-purple-600 rounded-t-lg active dark:text-purple-500 dark:border-purple-500' : 'hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300' %>"><h1>Verkauft</h1></a>
+            </li>
+        </ul>
+       
+    </div>
+
+</body>
+</html>

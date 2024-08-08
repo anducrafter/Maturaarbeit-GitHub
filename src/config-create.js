@@ -11,9 +11,6 @@ const createSchema = new mongoose.Schema({
     creator:{
         type: String,
     },
-    uuid:{
-        type: String,
-    },
     titel:{
         type: String,
     },
@@ -36,11 +33,10 @@ const createSchema = new mongoose.Schema({
         type: String,
     },
     status:{
-        type: String,
+        type: Number,
     },
     img:{
-        data: Buffer,
-        contentType: String,
+        type: Array,
     
     }
 });

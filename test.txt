@@ -57,3 +57,76 @@
                 </svg>
                   <span class="sr-only">Dribbble account</span>
               </a>
+
+
+
+
+
+
+Auction
+
+
+               <div class="auction-cards flex justify-center items-center min-h-screen py-6 bg-gray-100">
+      <div class="card bg-white p-6 border rounded-lg shadow-md backdrop-blur-md">
+        <!-- Bild -->
+        <img class="w-full h-64 object-cover mb-6 rounded" src="/uploads/<%=auction.img[0] %>" alt="Auktionsbild">
+    
+        <!-- Auktionsdetails -->
+        <div class="space-y-4">
+          <!-- Beschreibung und Titel -->
+          <div>
+            <h3 class="text-2xl font-bold"><%= auction.description %></h3>
+          </div>
+    
+          <!-- Bieten -->
+          <form action="/au/<%=auction._id%>" method="post" class="space-y-4">
+            <input type="number" name="newbit" min="<%= auction.startbit + 1 %>" placeholder="<%= auction.startbit %>" required class="border rounded px-4 py-2 w-full">
+            <button type="submit" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">Bieten neu</button>
+          </form>
+    
+          <!-- Timer -->
+          <div id="timer-<%= auction._id %>" class="text-gray-700 text-lg">
+            Time left:
+            <script>
+              function timeleft(milliseconds) {
+                milliseconds = parseInt(milliseconds)
+                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                if (milliseconds - Date.now() > 86400000) return "Endet am " + new Date(milliseconds).toLocaleDateString(undefined, options);
+    
+                const now = Date.now();
+                const remainingTime = milliseconds - now;
+                let h = Math.floor(remainingTime / 3600000);
+                let m = Math.floor((remainingTime % 3600000) / 60000);
+                let s = Math.floor((remainingTime % 60000) / 1000);
+                return "Endet in " + `${h} Stunden ${m} Minuten ${s} Sekunden`;
+              }
+    
+              let time = '<%= auction.timestamp %>';
+              const timerElement = document.getElementById(`timer-<%= auction._id %>`);
+    
+              const countdown = setInterval(() => {
+                if ((time - Date.now()) <= 0) {
+                  clearInterval(countdown);
+                  timerElement.innerText = "Auktion fertig";
+                } else {
+                  timerElement.innerText = timeleft(time);
+                }
+              }, 1000);
+            </script>
+          </div>
+    
+          <!-- Startgebot -->
+          <h4 class="text-lg font-semibold">Startgebot: <%= auction.startbit %></h4>
+    
+          <!-- Bithistory -->
+          <div class="space-y-2">
+            <% auction.bithistory.forEach(history => { %>
+              <div class="text-sm">
+                <h4 class="font-medium"><%= history.name %></h4>
+                <h3 class="font-semibold"><%= history.bit %></h3>
+              </div>
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>

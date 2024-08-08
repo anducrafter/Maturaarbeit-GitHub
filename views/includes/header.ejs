@@ -24,23 +24,82 @@
   <header class="bg-lime-700 text-white py-5">
     <div class="container mx-auto px-6 flex flex-wrap items-center justify-between">
       <div class="text-3xl font-bold">
-        <a href="#">Repli.ch</a>
+        <a href="/">Repli.ch</a>
       </div>
-      <button class="block lg:hidden text-white focus:outline-none" id="navbar-toggler">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-        </svg>
-      </button>
+<div class="w-12 h-12"> 
+  <a href="create">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>  
+  </a>
+</div>
+    
       
+<%if (login == null) {%>
+
+  <button class="block lg:hidden text-white focus:outline-none" id="navbar-toggler">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+    </svg>
+  </button>
+
       <nav class="hidden lg:flex w-full lg:w-auto" id="navbar-menu">
         <ul class="lg:flex lg:items-center lg:ml-auto space-y-4 lg:space-y-0 lg:space-x-8 text-lg">
-          <li><a href="/" class="hover:text-gray-200">Home</a></li>
           <li><a href="/login" class="hover:text-gray-200">login</a></li>
           <li><a href="sign" class="hover:text-gray-200">Regestrieren</a></li>
-       
         </ul>
       </nav>
+<% } else { %>
+
+      <div class="relative inline-block">
+        <button id="dropdownButton" class=class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" type="button">
+          <img class="w-12 h-12 rounded-full" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="user photo">
+        </button>
+    
+        <!-- Dropdown menu -->
+        <div id="dropdownMenu" class="hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 absolute -left-12">
+            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownButton">
+                <li>
+                    <a href="/Dashboard/wins" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Dashboard</a>
+                </li>
+                <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Settings</a>
+                </li>
+                <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Earnings</a>
+                </li>
+                <li>
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Sign out</a>
+                </li>
+            </ul>
+        </div>
     </div>
+    
+    </div>
+
+    <%}%>
+  
+  <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          var dropdownButton = document.getElementById('dropdownButton');
+          var dropdownMenu = document.getElementById('dropdownMenu');
+  
+          dropdownButton.addEventListener('click', function (event) {
+              event.stopPropagation();
+              dropdownMenu.classList.toggle('hidden');
+          });
+  
+          document.addEventListener('click', function () {
+              if (!dropdownMenu.classList.contains('hidden')) {
+                  dropdownMenu.classList.add('hidden');
+              }
+          });
+  
+          dropdownMenu.addEventListener('click', function (event) {
+              event.stopPropagation();
+          });
+      });
+  </script>
   </header>
 
 

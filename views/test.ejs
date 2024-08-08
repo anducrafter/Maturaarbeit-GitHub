@@ -4,8 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <script>
+        // set the dropdown menu element
+const $targetEl = document.getElementById('dropdownMenu');
+
+// set the element that trigger the dropdown menu on click
+const $triggerEl = document.getElementById('dropdownButton');
+
+// options with default values
+const options = {
+    placement: 'bottom',
+    triggerType: 'click',
+    offsetSkidding: 0,
+    offsetDistance: 10,
+    delay: 300,
+    ignoreClickOutsideClass: false,
+    onHide: () => {
+        console.log('dropdown has been hidden');
+    },
+    onShow: () => {
+        console.log('dropdown has been shown');
+    },
+    onToggle: () => {
+        console.log('dropdown has been toggled');
+    },
+};
+
+// instance options object
+const instanceOptions = {
+  id: 'dropdownMenu',
+  override: true
+};
+
+    </script>
 </head>
 <body>
-    <%- include('includes/header.ejs') %>
+ 
+<h1>hi</h1>
 </body>
 </html>

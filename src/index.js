@@ -59,7 +59,7 @@ const usermanager = []
 
 
 //Wieso geht das ned ?
-app.use(express.static(path.join(__dirname+ "/public/css/sign.css")));
+app.use(express.static('src/public'));
 
 
 //Node emailer
@@ -96,15 +96,13 @@ const transporter = nodemailer.createTransport({
 
 
 
-app.get("/au/:id",async (req,res) =>{
+app.get("/au/:id", async (req,res) =>{
    
     try{
 
         
-        const auction = await auctioncollection.find({uuid: req.params.id});
-       
-        console.log(auction._Id);
-        res.render('auction', { auctions: auction, id: req.params.id });
+        const auction =  await auctioncollection.findOne({_id: req.params.id});
+        res.render('auction', { auction: auction, id: req.params.id, login : req.session.user });
         
     }catch(err){
         console.log(err)
@@ -112,31 +110,34 @@ app.get("/au/:id",async (req,res) =>{
     
 })
 
-app.get("/dashboard/auction",  async (req,res) =>{
+app.get("/dashboard/:type", isAuthenticated, async (req,res) =>{
    
     try{
-        const user = await collection.findOne({name: req.session.user})
-        const userauctions = user.create;
-        const auction = await auctioncollection.find({uuid: {$in : userauctions}});
-        console.log(auction)
-        res.render('userauction', { auctions: auction, id: req.params.id });
-        
-    }catch(err){
-        console.log(err)
-    }
-    
-})
 
-app.get("/dashboard/wins",  async (req,res) =>{
-   
-    try{
         const user = await collection.findOne({name: req.session.user})
+        const time = new Date().getTime();
+        const createauction = user.create;
         const userauctions = user.auctions;
-        const timne = new Date().getTime();
-        console.log(timne)
-        const auction = await auctioncollection.find({uuid: {$in : userauctions}, biter: req.session.user, timestamp: {$lt: timne}});
-        console.log(auction)
-        res.render('userauction', { auctions: auction, id: req.params.id });
+        if(req.params.type == "offers"){
+            const auction = await auctioncollection.find({_id: {$in : userauctions}, timestamp: {$gt: time}});
+          
+            res.render('dashboard/user/userauction', { auctions: auction, type :req.params.type , login : req.session.user});
+
+          
+        }else if (req.params.type == "wins"){
+            const auction = await auctioncollection.find({_id: {$in : userauctions}, biter: req.session.user, timestamp: {$lt: time}});
+            console.log("tesrt 1");
+            res.render('dashboard/user/userwinauction', { auctions: auction, type: req.params.type, login : req.session.user});
+
+        }else if( req.params.type == "auctions"){
+            const auction = await auctioncollection.find({_id: {$in : createauction}, timestamp: {$gt: time}});
+            res.render('dashboard/creator/creatorauction', { auctions: auction, type: req.params.type, login : req.session.user});
+
+        }else if( req.params.type == "sell"){
+            const auction = await auctioncollection.find({_id: {$in : createauction}, timestamp: {$lt: time}});
+            res.render('dashboard/creator/creatorwinauction', { auctions: auction, type: req.params.type, login : req.session.user});
+        }
+     
         
     }catch(err){
         console.log(err)
@@ -144,13 +145,55 @@ app.get("/dashboard/wins",  async (req,res) =>{
     
 })
 
+app.get("/dashboard/u/aufinish/:id",async (req,res) =>{
+   
+    try{
+
+        
+        const auction = await auctioncollection.findOne({_id: req.params.id});
+       
+        const date = new Date();
+        if(auction.biter != req.session.user && auction.timestamp < date.getTime()) {
+            const auction =  await auctioncollection.find({});
+            res.render("index",{auctions: auction})
+        }
+        const creator = await collection.findOne({name: auction.creator})
+        res.render('dashboard/user/userauctionfinish', { auctions: auction,creator: creator, login : req.session.user});
+        
+    }catch(err){
+        console.log(err)
+    }
+    
+})
+
+app.get("/dashboard/c/aufinish/:id",async (req,res) =>{
+   
+    try{
+
+        
+        const auction = await auctioncollection.findOne({_id: req.params.id});
+       
+        const date = new Date();
+        if(auction.creator != req.session.user && auction.timestamp < date.getTime()) {
+            const auction =  await auctioncollection.find({});
+            res.render("index",{auctions: auction})
+        }
+        const buyer = await collection.findOne({name: auction.biter})
+        console.log(buyer)
+        res.render('dashboard/creator/creatorauctionfinish', { auctions: auction,buyer: buyer, login : req.session.user});
+        
+    }catch(err){
+        console.log(err)
+    }
+    
+})
 
 app.get("/category/:id",async (req,res) =>{
    
     try{
         const auction = await auctioncollection.find({categorique: req.params.id});
-      
-        res.render('category', { auctions: auction, id: req.params.id });
+       
+        res.render('category', { auctions: auction , login : req.session.user});
         
     }catch(err){
         console.log(err)
@@ -159,7 +202,7 @@ app.get("/category/:id",async (req,res) =>{
 })
 
 
-app.get("/", async (req, res) => {
+app.get("/",  loadAuthenticated, async (req, res) => {
   /*  try {
       const images = await imgcollection.find({});
       res.render('index', { images: images });
@@ -189,7 +232,8 @@ app.get("/", async (req, res) => {
   try{
   const auction =  await auctioncollection.find({});
  
-   res.render('index', { auctions: auction });
+  console.log(req.session.user);
+   res.render('index', { auctions: auction, login : req.session.user});
 }catch(err){
     console.log(err)
 }
@@ -199,15 +243,15 @@ app.get("/", async (req, res) => {
 
 
 app.get("/login", (req,res) =>{
-    res.render("login");
+    res.render("login", {login : req.session.user});
 })
 
 app.get("/register", (req,res) =>{
-    res.render("sign");
+    res.render("sign",{login : req.session.user});
 })
 
 app.get("/create", (req,res) =>{
-    res.render("uploade");
+    res.render("uploade",{login : req.session.user});
 })
 
 //Ist ein proversorium um css zu laden
@@ -225,31 +269,73 @@ app.get("/src/public/css/:id",(req,res) =>{
 function isAuthenticated(req, res, next) {
     if (req.session.user) {
         return next();
-    } else if(!req.cookies["login"]) {
-        req.session.user = req.cookie.login
+    } else if(req.cookies.login != null) {
+         
+        req.session.user = JSON.parse(req.cookies.login)
+        console.log(req.session.user)
+        return next();
     }else{
         res.redirect('/login');
-        console.log("naa wieso geht der scheiss nd")
     }
 }
 
-function uuidv4() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-    .replace(/[xy]/g, function (c) {
-        const r = Math.random() * 16 | 0, 
-            v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+function loadAuthenticated(req, res, next) {
+    if (req.session.user) {
+       
+    } else if(req.cookies.login != null) {
+         
+        req.session.user = JSON.parse(req.cookies.login)
+        console.log(req.session.user)
+        
+    }
+    return next();
 }
+
+app.post("/dashboard/u/aufinish/:id", isAuthenticated , async(req,res) =>{
+    const auction =  await auctioncollection.findOne({_id: req.params.id});
+    let status = auction.status;
+    if(status == 4){
+      console.log("Auktion schon abgeschlossen");
+      return;  
+    }
+    if(status == 2){
+
+        console.log("Auktion muss lieferant fertig");
+        return;
+    }
+
+    status++;
+    await auctioncollection.updateOne({_id: req.params.id},{$set: {status: status}})
+    res.redirect("dashboard/user/userauctionfinish/"+req.params.id)
+
+});
+
+app.post("/dashboard/c/aufinish/:id", isAuthenticated , async(req,res) =>{
+    const auction =  await auctioncollection.findOne({_id: req.params.id});
+    let status = auction.status;
+    if(status == 4){
+      console.log("Auktion schon abgeschlossen");
+      return;  
+    }
+    if(status != 2){
+        console.log("Auktion muss lieferant fertig");
+        return;
+    }
+
+    status++;
+    await auctioncollection.updateOne({_id: req.params.id},{$set: {status: status}})
+    res.redirect("/dashboard/c/aufinish"+req.params.id);
+
+});
 app.post("/au/:id", isAuthenticated, async(req,res) =>{
     
     try{
-       const auction =  await auctioncollection.findOne({uuid: req.params.id});
+       const auction =  await auctioncollection.findOne({_id: req.params.id});
        if(auction.timestamp <= Date.now()){ res.send("auction schon vorbei"); return;}
        
      const bit = auction.startbit;
      const newbit = req.body.newbit;
-  
+ 
    if(newbit > bit){
     const biter =  auction.biter;
     const newbiter = req.session.user;
@@ -259,7 +345,7 @@ app.post("/au/:id", isAuthenticated, async(req,res) =>{
     if(auction.timestamp <= Date.now()+300000){
        auction.timestamp+= 180000; //füge noch 3 Minuten hinzu
     }
-       const auctionupdate = await auctioncollection.updateOne({uuid: req.params.id},{$set: {startbit: newbit, biter: newbiter, bithistory: history, timestamp: auction.timestamp}})
+       const auctionupdate = await auctioncollection.updateOne({_id: req.params.id},{$set: {startbit: newbit, biter: newbiter, bithistory: history, timestamp: auction.timestamp}})
        const user = await collection.findOne({name: req.session.user})
        const at  =user.auctions;
      if(at == ""){
@@ -280,6 +366,7 @@ app.post("/au/:id", isAuthenticated, async(req,res) =>{
    }
    
 });
+
 app.post("/create",  upload.single("image"),isAuthenticated,async (req,res) =>{
     try {
         //Save image in database
@@ -292,35 +379,37 @@ app.post("/create",  upload.single("image"),isAuthenticated,async (req,res) =>{
         }
 
         const aution = new auctioncollection();
-        aution.uuid = uuidv4();
         aution.titel = data.titel;
         aution.description = data.description;
         aution.startbit = data.startbit;
         aution.creator = req.session.user;
         aution.bithistory = []
         aution.categorique = data.categorique;
+        aution.status = 1;
         const datee = new Date();
         
        // days now in minutes aution.timestamp = date.getTime()+1000 * 60 * 60 * 24 *data.time;
          aution.timestamp = datee.getTime()+1000 * 60 * data.time;
         aution.biter = "";
-        aution.img.data = fs.readFileSync(path.join(uploadDir, req.file.filename));
-        aution.img.contentType = "imga/png";
+//        console.log(path.join(uploadDir, req.file.filename))
+  //      console.log(req.file.filename);
+        //Das hier war noch mit mongodb die bildern
+    //    aution.img.data = fs.readFileSync(path.join(uploadDir, req.file.filename));
+        aution.img.push(req.file.filename);
 
 
         aution.save().then(() =>{
-           
-           
         //   await  collection.updateOne({name: req.session.user}, {$set : {create: userauction}})
         }).catch((err) =>{
             console.log(err);
             console.log("Fehler beim Auction in databank Speichern")
         })
         const user =   await collection.findOne({name: req.session.user});
-        const  userauction = user.create;
+        let userauction;
+        if(user.create != null ? userauction = user.create : userauction = []);
+       
         
-         userauction.push(aution.uuid);
-         console.log(userauction)
+         userauction.push(aution._id);
          await  collection.updateOne({name: req.session.user}, {$set : {create: userauction}})
       //   await collection.updateOne({name: req.session.user}, {$set : {auctions:  at}})
         //Save now open auction in database
@@ -367,7 +456,7 @@ app.post("/register",async (req,res) =>{
 
 });
 app.get("/test" , async(req,res) =>{
-res.render("test");
+res.render("test", {gaming: "gaming"});
 })
 
 app.post("/" , async (req, res) =>{
@@ -375,7 +464,7 @@ app.post("/" , async (req, res) =>{
     const search = req.body.search;
     const auction = await auctioncollection.find({titel: { $regex: "(?i)(.*" + search + ".*)"}});
     console.log(auction)
-    res.render('search', { auctions: auction });
+    res.render('search', { auctions: auction, login :  req.session.user });
 });
 
 //Login
@@ -393,9 +482,13 @@ app.post("/login" ,async (req,res) =>{
         }
         const passwordis = await bycript.compare(data.password,user.password)
         if(passwordis){
-           
-            req.session.user = user.name;
-            res.cookie("login", user.name);
+           const haseduser =  await bycript.hash(user.name,9);
+            req.session.user = haseduser;
+            res.cookie('login',JSON.stringify(user.name), {
+                httpOnly: true, // Helps prevent XSS attacks
+                secure: false,   // Ensures cookie is sent over HTTPS
+                maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+              });
             res.redirect("/")
             var randomNumber=Math.random().toString();
             randomNumber=randomNumber.substring(2,randomNumber.length);

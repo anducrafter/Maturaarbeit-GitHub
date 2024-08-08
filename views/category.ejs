@@ -4,56 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link  rel="stylesheet" href="/src/public/css/index.css">
-
-    <script> 
-      function timeleft(milliseconds,uuid) {
-        milliseconds = parseInt(milliseconds);
-                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                if(milliseconds - Date.now() <= 0)return "Auktion beendet am " + new Date((milliseconds)).toLocaleDateString(undefined,options);
-              
-                if ( milliseconds - Date.now() > 86400000) return new Date(milliseconds).toLocaleDateString(undefined, options);
-                
-                const now = Date.now();
-                const remainingTime = milliseconds - now;
-                let h = Math.floor(remainingTime / 3600000);
-                let m = Math.floor((remainingTime % 3600000) / 60000);
-                let s = Math.floor((remainingTime % 60000) / 1000);
-                return `${h} Stunden ${m} Minuten ${s} Sekunden`;
-            }
-            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            function setTime(milliseconds,uuid){
-              const countdown = setInterval(() => {
-                const timerElement = document.getElementById(`timer-`+uuid);
-                if ((milliseconds - Date.now()) < 0) {
-                          clearInterval(countdown);
-                          timerElement.innerText = timeleft(milliseconds,uuid)
-                      }
-              
-              timerElement.innerText =timeleft(milliseconds,uuid)
-              },1000);
-            }
-         
-      </script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
+<body class="flex flex-col  h-screen">
 
-
-    <main>
-        <h1>Auktionen</h1>
-     <div class="category">
-        <a href="/category/Antiquitäten & Kunst">Antiquitäten & Kunst</a>
-        <a href="/category/Audio, TV & Video">Audio, TV & Video</a>
-
-        <a href="/category/Audio, TV & Video">Audio, TV & Video</a>
-
-        <a href="/category/Audio, TV & Video">Audio, TV & Video</a>
-
-        <a href="/category/Audio, TV & Video">Audio, TV & Video</a>
-
-        <a href="/category/Audio, TV & Video">Audio, TV & Video</a>
-
+  <%- include('includes/header.ejs') %>
+  <%- include('includes/searchbar.ejs') %>
+   
 
         <%- include('includes/auctioncard.ejs',auctions) %>
+        <%- include('includes/footer.ejs') %>
 </body>
 </html>

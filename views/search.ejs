@@ -36,50 +36,13 @@
          
       </script>
 </head>
-<body>
-    <main>
-        <h1>Auktionen</h1>
-        <div class="upload-link">
-          <a href="create">Auktion erstellen</a>
-        </div>
+<body class="flex flex-col  h-screen">
 
-        <form action="/" method="POST">
-          <input type="text" name="search" id="search">
-            <!---Hier sollte noch ein JS reinkommen,
-              <option value="Antiquitäten & Kunst">Antiquitäten & Kunst</option>
-            <option value="Audio, TV & Video">Audio, TV & Video</option>
-            <option value="Baby & Kind">Baby & Kind </option>
-            <option value="Bücher">Bücher </option>
-            <option value="Fahrzeuge">Fahrzeuge </option>
-            <option value="option6">Option </option>
-            <option value="option7">Option </option>
-            <option value="option8">Option </option>
-        </select>
-            
-            
-            wo es automatisch bearbeitet wird-->
-          <button>Suchen</button>
-        </form>
-        <div class="auction-cards">
-          <% if (auctions.length > 0) { %>
-            <% auctions.forEach(auc => { %>
-              <div class="card">
-                
-                <a href="http://localhost:5000/au/<%= auc.uuid%>">
-                  <img class="resize" src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>">
-                </a>
-                <h3><%= auc.titel %></h3>
-                <h4>Startgebot: <%= auc.startbit %></h4>
-                <h5 id="timer-<%= auc.uuid %>"> 
-                  <script>
-                    setTime(" <%= auc.timestamp %>","<%= auc.uuid %>")
-                  </script>
-                </h5>
-              
-              </div>
-            <% }) %>
-          <% } %>
-        </div>
-      </main>
+  <%- include('includes/header.ejs') %>
+  <%- include('includes/searchbar.ejs') %>
+   
+
+        <%- include('includes/auctioncard.ejs',auctions) %>
+        <%- include('includes/footer.ejs') %>
 </body>
 </html>
