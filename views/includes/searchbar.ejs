@@ -24,6 +24,33 @@
             <a href="/category/Bücher" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Bücher</a>
             <a href="/category/Fahrzeuge" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Fahrzeuge</a>
           </div>
+  </form>
+
+
+
+
+
+
+    <script>
+
+// Get the current URL
+var currentPath = window.location.pathname;
+let formdiv = document.getElementById('form');
+let mydiv = document.getElementById('div');
+if (currentPath !== "/") {
+  let actionpage =  document.getElementById("form");
+  actionpage.parentNode.removeChild(actionpage);
+}else{
+  let actionpage =  document.getElementById("div");
+  actionpage.parentNode.removeChild(actionpage);
+}
+
+      document.getElementById('searchbutton').addEventListener('click', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+       
+      });
+     </script>
+
         
     </form>
 </body>
