@@ -62,7 +62,78 @@
         <% }) %>
       <% } %>
     </div>
+
   </main>
 
+  <div class="flex place-content-center">
+    <nav aria-label="Page navigation example">
+      <ul class="flex items-center -space-x-px h-10 text-base" id="pagination">
+        <!-- Pagination items will be dynamically inserted here by JavaScript -->
+      </ul>
+    </nav>
+  </div>
+  <script>
+    // Total number of pages (for example, you can fetch this from the server)
+    const totalPages = Math.ceil('<%=lenght%>'); // Example: Assume there are 25 total pages.
+    const maxVisiblePages = 10; // Max number of page links to show
+  
+    // Get the current page from the URL query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    let currentPage = parseInt(urlParams.get('page')) || 1; // Defaults to page 1 if no query
+  
+    // Function to create pagination links
+    function createPagination() {
+      const paginationContainer = document.getElementById('pagination');
+      paginationContainer.innerHTML = ''; // Clear existing pagination
+  
+      // Calculate the start and end of the visible page range
+      let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+      let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+  
+      // Adjust start and end if we're near the beginning or end of the page range
+      if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+      }
+  
+      // Previous button
+      const prevItem = document.createElement('li');
+      const prevLink = document.createElement('a');
+      prevLink.href = `?page=${currentPage - 1}`;
+      prevLink.className = `flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+        currentPage === 1 ? 'pointer-events-none opacity-50' : ''
+      }`;
+      prevLink.innerHTML = `<svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/></svg>`;
+      prevItem.appendChild(prevLink);
+      paginationContainer.appendChild(prevItem);
+  
+      // Page numbers
+      for (let i = startPage; i <= endPage; i++) {
+        const listItem = document.createElement('li');
+        const pageLink = document.createElement('a');
+        pageLink.href = `?page=${i}`;
+        pageLink.className = `flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+          i === currentPage ? 'text-blue-600 border-blue-300 bg-blue-50 dark:bg-gray-700 dark:text-white' : ''
+        }`;
+        pageLink.innerText = i;
+        listItem.appendChild(pageLink);
+        paginationContainer.appendChild(listItem);
+      }
+  
+      // Next button
+      const nextItem = document.createElement('li');
+      const nextLink = document.createElement('a');
+      nextLink.href = `?page=${currentPage + 1}`;
+      nextLink.className = `flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${
+        currentPage === totalPages ? 'pointer-events-none opacity-50' : ''
+      }`;
+      nextLink.innerHTML = `<svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/></svg>`;
+      nextItem.appendChild(nextLink);
+      paginationContainer.appendChild(nextItem);
+    }
+  
+    // Initialize pagination on page load
+    createPagination();
+  </script>
+ 
 </body>
 </html>

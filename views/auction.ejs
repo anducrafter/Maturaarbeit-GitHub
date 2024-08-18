@@ -6,75 +6,201 @@
     <title>Auktion</title>
    
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%=API%>=places"></script>
+    <script>
+      let map;
+      let marker;
+
+        function initMap() {
+            // Initialize the map centered on Switzerland
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 46.8182, lng: 8.2275 }, // Center of Switzerland
+                zoom: 7,
+            });
+            showGemeindeLocation("<%=user.address%>");
+        }
+
+        function showGemeindeLocation(address) {
+        
+            const geocoder = new google.maps.Geocoder();
+
+            // Geocode the address to get the Gemeinde
+            geocoder.geocode({ address: address + ", Switzerland" }, (results, status) => {
+                if (status === "OK") {
+                    const place = results[0];
+                    let gemeinde = "";
+
+                    // Find Gemeinde in the address components
+                    place.address_components.forEach(component => {
+                        if (component.types.includes("locality")) {
+                            gemeinde = component.long_name;
+                        } else if (component.types.includes("administrative_area_level_2")) {
+                            gemeinde = gemeinde || component.long_name;
+                        }
+                    });
+
+                    if (gemeinde) {
+                        // Use Google's Geocoding API to get the location of the Gemeinde
+                        geocoder.geocode({ address: gemeinde + ", Switzerland" }, (results, status) => {
+                            if (status === "OK") {
+                                // Center the map on the Gemeinde
+                                map.setCenter(results[0].geometry.location);
+                                map.setZoom(12); // Adjust zoom level to show the Gemeinde
+
+                                // If a marker already exists, remove it
+                                if (marker) {
+                                    marker.setMap(null);
+                                }
+
+                                // Add a marker at the Gemeinde location
+                                marker = new google.maps.Marker({
+                                    position: results[0].geometry.location,
+                                    map: map,
+                                    title: gemeinde,
+                                });
+                            } else {
+                                alert("Geocode was not successful for the following reason: " + status);
+                            }
+                        });
+                    } else {
+                        alert("Gemeinde information could not be found.");
+                    }
+                } else {
+                    alert("Geocode was not successful for the following reason: " + status);
+                }
+            });
+        }
+
+       
+        // Initialize map on page load
+        window.onload = initMap;
+  </script>
+      <style>
+        #map {
+            height: 500px;
+            width: 100%;
+        }
+    </style>
 </head>
 
-<body class="flex flex-col  h-screen">
+<body class="flex flex-col min-h-screen">
   <%- include('includes/header.ejs') %>
   <%- include('includes/searchbar.ejs') %>
-    <div class="auction-cards flex justify-center items-center min-h-screen py-6 bg-gray-100">
-      <div class="card bg-white p-6 border rounded-lg shadow-md backdrop-blur-md">
-        <!-- Bild -->
-        <img class="w-full h-64 object-cover mb-6 rounded" src="/uploads/<%=auction.img[0] %>" alt="Auktionsbild">
-    
-        <!-- Auktionsdetails -->
-        <div class="space-y-4">
-          <!-- Beschreibung und Titel -->
-          <div>
-            <h3 class="text-2xl font-bold"><%= auction.description %></h3>
-          </div>
-    
-          <!-- Bieten -->
-          <form action="/au/<%=auction._id%>" method="post" class="space-y-4">
-            <input type="number" name="newbit" min="<%= auction.startbit + 1 %>" placeholder="<%= auction.startbit %>" required class="border rounded px-4 py-2 w-full">
-            <button type="submit" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">Bieten neu</button>
-          </form>
-    
-          <!-- Timer -->
-          <div id="timer-<%= auction._id %>" class="text-gray-700 text-lg">
-            Time left:
-            <script>
-              function timeleft(milliseconds) {
-                milliseconds = parseInt(milliseconds)
-                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                if (milliseconds - Date.now() > 86400000) return "Endet am " + new Date(milliseconds).toLocaleDateString(undefined, options);
-    
-                const now = Date.now();
-                const remainingTime = milliseconds - now;
-                let h = Math.floor(remainingTime / 3600000);
-                let m = Math.floor((remainingTime % 3600000) / 60000);
-                let s = Math.floor((remainingTime % 60000) / 1000);
-                return "Endet in " + `${h} Stunden ${m} Minuten ${s} Sekunden`;
-              }
-    
-              let time = '<%= auction.timestamp %>';
-              const timerElement = document.getElementById(`timer-<%= auction._id %>`);
-    
-              const countdown = setInterval(() => {
-                if ((time - Date.now()) <= 0) {
-                  clearInterval(countdown);
-                  timerElement.innerText = "Auktion fertig";
-                } else {
-                  timerElement.innerText = timeleft(time);
-                }
-              }, 1000);
-            </script>
-          </div>
-    
-          <!-- Startgebot -->
-          <h4 class="text-lg font-semibold">Startgebot: <%= auction.startbit %></h4>
-    
-          <!-- Bithistory -->
-          <div class="space-y-2">
-            <% auction.bithistory.forEach(history => { %>
-              <div class="text-sm">
-                <h4 class="font-medium"><%= history.name %></h4>
-                <h3 class="font-semibold"><%= history.bit %></h3>
+
+  <% if (auction.creator == login) { %>
+    <a href="/au/edit/<%= auction._id %>">
+      <button type="button" class="m-3 focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">
+        Bearbeiten
+      </button>
+    </a>
+  <% } %>
+
+ 
+  <!-- Main Content -->
+  <div class="flex-grow flex justify-center items-start py-6 bg-gray-100">
+    <div class="card bg-white p-6 border rounded-lg shadow-md backdrop-blur-md w-full max-w-4xl flex flex-col">
+      <!-- Carousel -->
+      <div class="relative w-full max-w-2xl mx-auto mt-4">
+        <div class="overflow-hidden relative rounded-lg max-h-96">
+          <div id="carousel" class="flex transition-transform duration-300 ease-in-out">
+            <% auction.img.forEach(i => { %>
+              <div class="min-w-full flex items-center justify-center">
+                <img class="w-auto h-96 object-contain rounded" src="/uploads/<%= i %>" alt="Auktionsbild">
               </div>
             <% }) %>
           </div>
         </div>
+
+        <!-- Carousel Arrows -->
+        <button id="prev" class="absolute top-1/2 transform -translate-y-1/2 left-4 z-10 bg-gray-700 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75">
+          &#10094;
+        </button>
+        <button id="next" class="absolute top-1/2 transform -translate-y-1/2 right-4 z-10 bg-gray-700 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75">
+          &#10095;
+        </button>
+      </div>
+
+      <!-- Auction Details -->
+      <div class="space-y-4 mt-6 flex-1 flex flex-col">
+        <!-- Title -->
+        <h3 class="text-2xl font-bold"><%= auction.titel %></h3>
+
+        <!-- Bidding Form -->
+        <form action="/au/<%= auction._id %>" method="post" class="flex items-center space-x-4">
+          <!-- Number Input Field -->
+          <div class="relative flex-grow">
+            <input id="numberInput" type="number" name="newbit" min="<%= auction.startbit + 1 %>" placeholder="<%= auction.startbit %>" required class="border rounded px-4 py-2 w-full transition-all duration-300">
+          </div>
+          <button type="submit" class="bg-purple-500 text-white px-4 py-2 rounded hover:bg-purple-600">Bieten neu</button>
+        </form>
+
+        <!-- Timer -->
+        <div id="timer-<%= auction._id %>" class="text-gray-700 text-lg">Time left:</div>
+
+        <!-- Auction Info -->
+        <h4 class="text-lg font-semibold">Startgebot: <%= auction.startbit %></h4>
+        <h4 class="text-lg">Beschreibung: <%= auction.description %></h4>
+        <h4 class="text-sm">Ersteller: <%= auction.creator %></h4>
+<!-- Auktion Standort-->
+<div id="map"></div>
+        <!-- Bidding History -->
+        <div class="space-y-2">
+          <% auction.bithistory.reverse().forEach(history => { %>
+            <div class="text-sm border-b border-gray-200 pb-2">
+              <h4 class="font-medium"><%= history.name %></h4>
+              <h3 class="font-semibold"><%= history.bit %></h3>
+            </div>
+          <% }) %>
+        </div>
       </div>
     </div>
-    <%- include('includes/footer.ejs') %>
+  </div>
+
+  <%- include('includes/footer.ejs') %>
+
+  <script>
+   
+    const carousel = document.getElementById('carousel');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    let index = 0;
+   
+    prev.addEventListener('click', () => {
+      index = (index > 0) ? index - 1 : carousel.children.length - 1;
+      carousel.style.transform = `translateX(-${index * 100}%)`;
+    });
+
+    next.addEventListener('click', () => {
+      index = (index < carousel.children.length - 1) ? index + 1 : 0;
+      carousel.style.transform = `translateX(-${index * 100}%)`;
+    });
+  </script>
+
+  <script>
+    function timeleft(milliseconds) {
+      milliseconds = parseInt(milliseconds);
+      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      if (milliseconds - Date.now() > 86400000) return "Endet am " + new Date(milliseconds).toLocaleDateString(undefined, options);
+
+      const now = Date.now();
+      const remainingTime = milliseconds - now;
+      let h = Math.floor(remainingTime / 3600000);
+      let m = Math.floor((remainingTime % 3600000) / 60000);
+      let s = Math.floor((remainingTime % 60000) / 1000);
+      return "Endet in " + `${h} Stunden ${m} Minuten ${s} Sekunden`;
+    }
+
+    let time = '<%= auction.timestamp %>';
+    const timerElement = document.getElementById(`timer-<%= auction._id %>`);
+
+    const countdown = setInterval(() => {
+      if ((time - Date.now()) <= 0) {
+        clearInterval(countdown);
+        timerElement.innerText = "Auktion fertig";
+      } else {
+        timerElement.innerText = timeleft(time);
+      }
+    }, 1000);
+  </script>
 </body>
 </html>

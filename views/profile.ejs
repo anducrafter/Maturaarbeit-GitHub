@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+      #suggestions {
+          border: 1px solid #ccc;
+          max-height: 150px;
+          overflow-y: auto;
+          position: absolute;
+          background: white;
+          width: 300px;
+          z-index: 1000;
+      }
+      #suggestions div {
+          padding: 8px;
+          cursor: pointer;
+      }
+      #suggestions div:hover {
+          background-color: #f0f0f0;
+      }
+  </style>
+
+
+<script>
+  function initAutocomplete() {
+      // Get the address input field
+      var input = document.getElementById('address');
+
+      // Create the autocomplete object and restrict it to geographical locations
+      var autocomplete = new google.maps.places.Autocomplete(input, {
+        types: ['geocode'],
+        componentRestrictions: { country: 'ch' } // Restrict to Switzerland
+      });
+
+      // Prevent form submission on Enter if a suggestion is still being focused
+      input.addEventListener('keydown', function(event) {
+          if (event.key === 'Enter') {
+              event.preventDefault();
+          }
+      });
+
+      // Fill in the address components when a user selects an address from the suggestions
+      autocomplete.addListener('place_changed', function() {
+          var place = autocomplete.getPlace();
+
+          // You can extract and fill other form fields with address details if needed
+          // For example: 
+          // document.getElementById('city').value = place.address_components[3].long_name;
+          // You can explore 'place' object to get more details like postal code, country, etc.
+      });
+  }
+</script>
+
+</head>
+<body onload="initAutocomplete()">
+    <%- include('includes/header.ejs') %>
+  
+
+    <h1>Deine Einstellungen</h1>
+
+    <h2><%= user.name%></h2>
+    <h2><%= user.email%></h2>
+    <h2><%= user.address%></h2>
+    <h2><%= user.phone%></h2>
+    <h2><%= user.about%></h2>
+
+
+
+    <form action="/profile" method="POST" enctype="multipart/form-data" class="space-y-4">
+        <div class=" p-10">
+          <h2 class="text-lime-500 text-xl font-semibold mb-2">Bild</h2>
+
+          <label 
+          id="image-label"
+          class="relative mb-5 flex items-center justify-center w-24 h-24 mx-auto border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition bg-cover bg-center"
+          style="background-image: url('/uploads/');">
+          <svg id="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+          </svg>
+          
+          <input type="file" name="image" class="hidden" id="image-input" accept="image/*" > 
+        </label>
+        <div>
+          <h2 class="text-green-500 text-xl font-semibold mb-2">Telepone nummer</h2>
+          <input type="tel" name="phone" value="<%=user.phone%>" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition resize-none" > 
+        </div>
+
+        <div>
+          <h2 class="text-green-500 text-xl font-semibold mb-2">Addresse</h2>
+          <input type="text" id="address" name="address" value="<%=user.address%>" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition resize-none" > 
+        </div>
+
+        <div>
+          <h2 class="text-purple-600 text-xl font-semibold mb-2">Beschreibung</h2>
+          <textarea name="about"  class="w-full border border-gray-300 rounded-md p-3 mb-5 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition resize-none" rows="4" > <%=user.about%> </textarea>
+        </div>
+
+        <div>
+          <input type="submit" value="Upload" class="bg-green-500 text-white rounded-md p-2 w-full cursor-pointer  hover:bg-green-600 ">
+        </div>
+      </div>
+      </form>
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuazAbAcn-qgJww5gop-mXipNL7Bmjo3o&libraries=places"></script>
+
+
+      <script>
+        
+          let inputElement = document.getElementById('image-input' );
+          let labelElement = document.getElementById('image-label' );
+          let iconElement = document.getElementById('icon');
+        
+          inputElement.addEventListener('change', function(event) {
+            if (event.target.files && event.target.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                labelElement.style.backgroundImage = 'url(' + e.target.result + ')';
+                if (iconElement) {
+                  iconElement.style.display = 'none';
+                }
+              };
+              reader.readAsDataURL(event.target.files[0]);         
+            }
+          });
+        
+        
+        </script>
+    
+    <%- include('includes/footer.ejs') %>
+</body>
+</html>

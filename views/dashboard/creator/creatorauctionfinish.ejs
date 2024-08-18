@@ -7,45 +7,68 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 <body class="flex flex-col  h-screen"> 
-    <main class="container mx-auto p-4 pl-12">
-    
-        <div class="auction-cards grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center">
-        
-           
-              <div class="card bg-white shadow-md rounded-lg p-3 flex flex-col items-center">
-                <a href="http://localhost:5000/au/<%= auctions._id%>" class="mb-4 w-full">
-                  <div class="w-full h-64  flex items-center justify-center overflow-hidden rounded-lg">
-                    <img class="object-cover w-full h-full" src="/uploads/<%= auc.img[0] %>" alt="<%= auctions.titel %>">
-                  </div>
-                </a>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">  Preis: <%= auctions.startbit %></h3>
-                <h4 class="text-lg text-gray-600 mb-4"><%= auctions.titel %> </h4>
-                <h5 class="text-gray-600" ><%= auctions.description %></h5>
-              </div>
+  <%- include('../../includes/header.ejs') %>
+  <main class="container mx-auto p-4  content-center">
+
+    <!-- Auction Items Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center mb-5">
+      
+      <!-- Single Auction Card -->
+      <div class="card bg-white shadow-md rounded-lg p-3 flex flex-col items-center">
+        <a href="http://localhost:5000/au/<%= auctions._id%>" class="mb-4 w-full">
+          <div class="w-full h-64 flex items-center justify-center overflow-hidden rounded-lg">
+            <img class="object-cover w-full h-full" src="/uploads/<%= auctions.img[0] %>" alt="<%= auctions.titel %>">
+          </div>
+        </a>
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Preis: <%= auctions.startbit %></h3>
+        <h4 class="text-lg text-gray-600 mb-4"><%= auctions.titel %></h4>
+        <p class="text-gray-600 text-sm text-center"><%= auctions.description %></p>
+      </div>
+      
+    </div>
+  
+    <!-- Buyer Information -->
+    <div class="bg-gray-100 p-5 rounded-lg shadow-md">
+      <h1 class="text-2xl font-semibold text-gray-800 mb-4">Bitte kontaktiere den Käufer um möglichst schnell die Auktion abzuschließen</h1>
+      
+      <!-- Buyer Details -->
+      <div class="flex items-center mb-4">
+        <% if (buyer && buyer.img) { %>
+          <img class="w-16 h-16 rounded-full mr-4" src="/uploads/<%=buyer.img%>" alt="user photo">
+        <% } else { %>
+          <img class="w-16 h-16 rounded-full mr-4" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="user photo">
+        <% } %>
+        <div>
+          <h2 class="text-lg font-bold"><%= buyer.name %></h2>
+          <h1 class="text-gray-800">Email</h1>
+          <p class="text-gray-600"><%= buyer.email %></p>
+          <h1 class="text-gray-800">Telephone</h1>
+          <p class="text-gray-600"><%= buyer.phone %></p>
         </div>
-
-        <h1>Bitte kontaktiere den Käufer um möglichst schnell die Auktion abzuschliessen</h1>
-        <h2><%= buyer.name %></h2>
-        <h2><%= buyer.email %></h2>
-        <p><%= auctions.status== 1 ? "warte auf Bezahlung" : auctions.status== 2 ? "noch zu Liefern" : auctions.status== 3 ? "Gesendet" : "Abgeschlossen" %></p>
-        <form action="<%= auctions._id%>" method="post">
-
-            <% if( auctions.status == 2 ){%>
-                <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full">
-                    Geliefert
-                   </button>
-
-                <% } else if( auctions.status == 1 ) {%>
-                    <h1>Warte auf Bezahlung</h1>
-                    <%} else if( auctions.status == 3 ) {%>
-                        <h1>Auktion ist Geliefert</h1>
-                        <%} else {%>
-
-                            <h1>Auktion ist Abgeschlossen</h1>
-                            <%}%>
-           
-
-            </form>
-      </main>
+      </div>
+  
+      <!-- Auction Status -->
+      <p class="font-medium text-purple-600 mb-4"> Auktion Status : 
+        <%= auctions.status == 1 ? "Warte auf Bezahlung" : auctions.status == 2 ? "Noch zu Liefern" : auctions.status == 3 ? "Gesendet" : "Abgeschlossen" %>
+      </p>
+  
+      <!-- Action Button -->
+      <form action="/dashboard/c/aufinish/<%= auctions._id%>" method="post">
+        <% if (auctions.status == 2) { %>
+          <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full">
+            Geliefert
+          </button>
+        <% } else if (auctions.status == 1) { %>
+          <h1 class="text-xl  text-gray-600">Auktion ist Abgeschlossen</h1>
+        <% } else if (auctions.status == 3) { %>
+          <h1 class="text-xl  text-gray-600">Auktion ist Abgeschlossen</h1>
+        <% } else { %>
+          <h1 class="text-xl  text-gray-600">Auktion ist Abgeschlossen</h1>
+        <% } %>
+      </form>
+    </div>
+    
+  </main>
+  <%- include('../../includes/footer.ejs') %>
 </body>
 </html>

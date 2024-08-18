@@ -39,73 +39,84 @@
 <body class="flex flex-col  h-screen">
     <%- include('../../includes/header.ejs') %>
     <%- include('../../includes/tabs.ejs',type) %>
-    <main class="container mx-auto p-4 pl-12">
-        <p>Auktionen, welche du Gewonnen hast</p>
-        <div class="auction-table w-full overflow-auto">
-          <% if (auctions.length > 0) { %>
-            <table class="w-full table-auto border-collapse">
-           
-                <% auctions.forEach(auc => { %>
-                 
-                  <tr class="bg-white border-b">
-                    <td class="px-4 py-2">
-                      <% if(auc.biter != "") {%>
-                      <a href="http://localhost:5000/dashboard/c/aufinish/<%= auc._id%>">
-                        <div class="w-full h-24 flex items-center justify-center overflow-hidden">
-                          <img class="object-cover w-full h-full" src="data:<%= auc.img.contentType %>;base64,<%= auc.img.data.toString('base64') %>" alt="<%= auc.titel %>">
-                        </div>
-                      </a>
-                    </td>
-                    <td class="px-4 py-2 text-gray-900 font-bold"><%= auc.titel %></td>
-                    <td class="px-4 py-2 text-gray-600"><%= auc.startbit %></td>
-                    <td class="px-4 py-2 text-gray-600" id="timer-<%= auc._id %>">
-                        
-                      <script>
-                        setTime("<%= auc.timestamp %>", "<%= auc._id %>");
-                      </script>
-                   
-                    </td>
-                    <td class="px-4 py-2 text-gray-600">Status : <%= auc.status== 1 ? "warte auf Bezahlung" : auc.status== 2 ? "noch zu Liefern" : auc.status== 3 ? "Gesendet" : "Abgeschlossen" %></td>
-                    <td>
-                        <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full">
-                       <a href="http://localhost:5000/dashboard/c/aufinish/<%= auc._id%>">Abschliessen</a>
-                      </button>
-
-                    </td>
-                    
-                  </tr>
-                  <%}else {%>
-                    <a href="http://localhost:5000/au/<%= auc._id%>">
-                      <div class="filter grayscale w-full h-24 flex items-center justify-center overflow-hidden">
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+      <p class="text-lg sm:text-xl lg:text-2xl">Auktionen, welche du Verkaufst hast</p>
+      <div class="auction-table w-full overflow-x-auto">
+        <% if (auctions.length > 0) { %>
+          <table class="w-full table-auto border-collapse hidden sm:table">
+            <% auctions.forEach(auc => { %>
+              <tr class="bg-white border-b">
+                <td class="px-4 py-2">
+          
+                  <a href="http://localhost:5000/au/<%= auc._id %>">
+                    <div class="w-24 h-24 sm:w-32 sm:h-32 lg:w-48 lg:h-48 flex items-center justify-center overflow-hidden filter grayscale ">
+                    <% if(auc.biter  === "") { %>
+                      <img class=" filter grayscale  object-cover w-full h-full" src="/uploads/<%= auc.img[0] %>" alt="<%= auc.titel %>">
+                      <%} else {%>
                         <img class="object-cover w-full h-full" src="/uploads/<%= auc.img[0] %>" alt="<%= auc.titel %>">
-                      </div>
-                    </a>
-                  </td>
-                  <td class="px-4 py-2 text-gray-900 font-bold"><%= auc.titel %></td>
-                  <td class="px-4 py-2 text-gray-600"><%= auc.startbit %></td>
-                  <td class="px-4 py-2 text-gray-600" id="timer-<%= auc._id %>">
+                        <%}%>
                       
-                    <script>
-                      setTime("<%= auc.timestamp %>", "<%= auc._id %>");
-                    </script>
-                 
-                  </td>S
+                    </div>
+                  </a>
+                </td>
+                <td class="px-4 py-2 text-gray-900 font-bold text-sm sm:text-base lg:text-lg"><%= auc.titel %></td>
+                <td class="px-4 py-2 text-gray-600 text-sm sm:text-base lg:text-lg"><%= auc.startbit %></td>
+                <td class="px-4 py-2 text-gray-600 text-sm sm:text-base lg:text-lg" id="timer-<%= auc._id %>">
+                  <script>
+                    setTime("<%= auc.timestamp %>", "<%= auc._id %>");
+                  </script>
+                </td>
+                <script>console.log("<%=auc.biter%>")</script>
+                <% if(auc.biter !== "") { %>
+                <td class="px-4 py-2 text-gray-600 text-sm sm:text-base lg:text-lg">Status : <%= auc.status== 1 ? "noch zu Bezahlen" : auc.status== 2 ? "Bezahlt" : auc.status== 3 ? "Gesendet" : "Abgeschlossen" %></td>
+                <%}else {%>
                   <td class="px-4 py-2 text-gray-600">Kein Käufer gefunden</td>
-                  <td>
-                      <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full">
-                        <a href="http://localhost:5000/au/<%= auc._id%>">Auktion verlängern</a>
-                    </button>
-
-                  </td>
+                  <%}%>
+                <td class="px-4 py-2">
+                  <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
+                    <a href="http://localhost:5000/dashboard/c/aufinish/<%= auc._id%>"> <%=auc.status== 4 ? "Abgeschlossen" : "Abschliessen"%></a>
+                  </button>
+                </td>
+               
+              </tr>
+            <% }) %>
+          </table>
+          
+          <div class="grid grid-cols-1 sm:hidden">
+            <% auctions.forEach(auc => { %>
+              <div class="bg-white border rounded-lg p-4 shadow mb-4">
+                <a href="http://localhost:5000/au/<%= auc._id%>">
+                  <div class="w-full h-48 flex items-center justify-center overflow-hidden mb-4 filter grayscale">
+                  <% if(auc.biter  === "") { %> 
+                    <img class="filter grayscale object-cover w-full h-full" src="/uploads/<%= auc.img[0] %>" alt="<%= auc.titel %>">
                   
-                </tr>
-                    <%}%>
-                <% }) %>
-           
-            </table>
-          <% } %>
-        </div>
-      </main>
+                    <%}else {%>
+                      <img class="object-cover w-full h-full" src="/uploads/<%= auc.img[0] %>" alt="<%= auc.titel %>">
+                      <%}%>
+                   
+                  </div>
+                </a>
+                <h3 class="text-gray-900 font-bold text-sm sm:text-base lg:text-lg mb-2"><%= auc.titel %></h3>
+                <p class="text-gray-600 text-sm sm:text-base lg:text-lg mb-2">Startgebot: <%= auc.startbit %></p>
+                <div class="text-sm sm:text-base lg:text-lg mb-2" id="timer-<%= auc._id %>">
+                  <script>
+                    setTime("<%= auc.timestamp %>", "<%= auc._id %>");
+                  </script>
+                </div>
+                <% if(auc.biter !== "") { %>
+                <td class="px-4 py-2 text-gray-600 text-sm sm:text-base lg:text-lg">Status : <%= auc.status== 1 ? "noch zu Bezahlen" : auc.status== 2 ? "Bezahlt" : auc.status== 3 ? "Gesendet" : "Abgeschlossen" %></td>
+                <%}else {%>
+                  <td class="px-4 py-2 text-gray-600">Kein Käufer gefunden</td>
+                  <%}%>
+                <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
+                  <a href="http://localhost:5000/dashboard/c/aufinish/<%= auc._id%>"><%=auc.status== 4 ? "Abgeschlossen" : "Abschliessen"%></a>
+                </button>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </main>
     <%- include('../../includes/footer.ejs') %>
 </body>
 </html>

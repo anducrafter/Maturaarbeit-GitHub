@@ -38,9 +38,26 @@ const LoginShema = new mongoose.Schema({
      
     },
     password:{
-    type:String,
+        type:String,
    
-    }
+    },
+    about:{
+        type:String,
+   
+    },
+
+    phone:{
+        type:Number,
+       
+     },
+    address:{
+        type:String,    
+
+     },
+     img:{
+        type:String,    
+
+     }
 });
 
 

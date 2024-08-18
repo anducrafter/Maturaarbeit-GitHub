@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <%- include('includes/header.ejs') %>
+    <div class="pt-10"></div>
+    <div class="max-w-xl mx-auto bg-white p-8 border-2 border-purple-500 rounded-lg shadow-lg">
+      <form action="/au/edit/<%= auction._id%>" method="POST" enctype="multipart/form-data" class="space-y-6">
+        <h2 class="text-purple-600 text-xl font-semibold mb-4">Verändere das Bild</h2>
+        <input type="hidden" name="count" id="count" value="[]">
+        <div class="text-center grid grid-cols-3 gap-4">
+        
+
+
+
+
+          <label 
+          id="image-label-0"
+          class="relative flex items-center justify-center w-24 h-24 mx-auto border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition bg-cover bg-center"
+          style="background-image: url('/uploads/<%= auction.img[0] %>');">
+          <input type="file" name="image" class="hidden" id="image-input-0" accept="image/*" value="<%= auction.img[0] %>" data-index="0">
+        </label>
+
+      <% for (let i =1; i <=5;  i++ ) { %>
+        <% if (auction.img[i]) { %>
+          <label 
+            id="image-label-<%= i %>"
+            class="relative flex items-center justify-center w-24 h-24 mx-auto border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition bg-cover bg-center"
+            style="background-image: url('/uploads/<%= auction.img[i] %>');">
+            <input type="file" name="image" class="hidden" id="image-input-<%= i %>" accept="image/*" data-index="<%=i%>">
+          </label>
+          <% } else { %>
+            <label 
+            id="image-label-<%= i %>"
+            class="relative flex items-center justify-center w-24 h-24 mx-auto border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition bg-cover bg-center"
+            style="background-image: url('/uploads/');">
+            <svg id="icon<%=i%>" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+            </svg>
+            
+            <input type="file" name="image" class="hidden" id="image-input-<%= i %>" accept="image/*" data-index="<%=i%>"> 
+          </label>
+            <% } %>
+
+        
+        <% } %>
+        </div>
+        
+
+
+
+
+        <% if (auction.biter == "") {%>
+        <div>
+          <h2 class="text-purple-600 text-xl font-semibold mb-2">Verändere den Startpreis</h2>
+          <input type="number" min="1" max="1000000" name="startbit" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition">
+        </div>
+    
+        <div>
+          <h2 class="text-purple-600 text-xl font-semibold mb-2">Verlängere deine Auktion</h2>
+          <input type="number" min="7" max="14" name="time" id="time" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition">
+        </div>
+        <% } %>
+        
+        <div>
+          <h2 class="text-purple-600 text-xl font-semibold mb-2">Verändere deine Kategorie</h2>
+          <select id="options" name="options" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition">
+            <option value="Antiquitäten & Kunst">Antiquitäten & Kunst</option>
+            <option value="Audio, TV & Video">Audio, TV & Video</option>
+            <option value="Baby & Kind">Baby & Kind</option>
+            <option value="Bücher">Bücher</option>
+            <option value="Fahrzeuge">Fahrzeuge</option>
+            <option value="option6">Option 6</option>
+            <option value="option7">Option 7</option>
+            <option value="option8">Option 8</option>
+          </select>
+        </div>
+    
+        <div>
+          <h2 class="text-purple-600 text-xl font-semibold mb-2">Titel</h2>
+          <input type="text" name="titel" id="titel" value="<%= auction.titel %>" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition">
+        </div>
+    
+        <div>
+          <h2 class="text-purple-600 text-xl font-semibold mb-2">Beschreibung</h2>
+          <textarea name="description" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition resize-none" rows="4"><%= auction.description %></textarea>
+        </div>
+    
+        <div>
+          <input type="submit" value="Upload" class="bg-purple-600 text-white rounded-md p-3 w-full cursor-pointer hover:bg-purple-700 transition">
+        </div>
+      </form>
+    </div>
+    
+    <div class="pt-10"></div>
+        <%- include('includes/footer.ejs') %>
+
+        <script>
+          document.getElementById('image-input').addEventListener('change', function(event) {
+            if (event.target.files && event.target.files[0]) {
+              var reader = new FileReader();
+              reader.onload = function(e) {
+                document.getElementById('image-label').style.backgroundImage = 'url(' + e.target.result + ')';
+              };
+              reader.readAsDataURL(event.target.files[0]);
+            }
+          });
+        </script>
+
+<script>
+for (let i = 0; i <= 5; i++) {
+  let inputElement = document.getElementById('image-input-' + i);
+  let labelElement = document.getElementById('image-label-' + i);
+  let iconElement = document.getElementById('icon' + i);
+
+  inputElement.addEventListener('change', function(event) {
+    if (event.target.files && event.target.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        labelElement.style.backgroundImage = 'url(' + e.target.result + ')';
+        if (iconElement) {
+          iconElement.style.display = 'none';
+        }
+      };
+      reader.readAsDataURL(event.target.files[0]);
+
+      // Update the count field with the changed image index
+      let countArray = JSON.parse(document.getElementById('count').value);
+      countArray.push(i);
+      document.getElementById('count').value = JSON.stringify(countArray);
+    }
+  });
+}
+
+</script>
+</body>
+</html>

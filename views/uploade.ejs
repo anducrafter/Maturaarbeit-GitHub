@@ -11,35 +11,57 @@
       }
     </style>
 </head>
-<body class="flex flex-col  h-screen">
+<body >
   <%- include('includes/header.ejs') %>
+ 
+
   <div class="pt-10"></div>
-  <div class="max-w-xl mx-auto bg-white p-8 border-2 border-purple-500 rounded-lg shadow-lg ">
-    <form action="/create" method="POST" enctype="multipart/form-data" class="space-y-4">
-      <div>
-        <h2 class="text-lime-500 text-xl font-semibold mb-2">Bild</h2>
-        <label class="flex items-center border border-gray-300 rounded-md cursor-pointer p-2 hover:bg-gray-100">
-          <input type="file" name="image" class="hidden">
-          <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 0L7.75 8h8.5L12 0zm2.5 9H9.5L12 4l2.5 5zM0 12l2-8h6l-2 8H0zm8.5 1L7 24H5.5L7 13h1.5zM6.75 8L5.5 13H4L5.25 8h1.5zm8.5-2H24l-2 8H10.25l2-8zM17 13h1.5L14.25 24H12.75L17 13zM12 20L7.75 28h8.5L12 20zm2.5 1H9.5L12 17l2.5 4zM2 16l2-8h6l-2 8H2zm8.5 1L7 29H5.5L7 17h1.5zM6.75 13L5.5 17H4L5.25 13h1.5zm8.5-3H24l-2 8H10.25l2-8zM17 17h1.5L14.25 29H12.75L17 17z"/>
-          </svg>
-          Upload Image
-        </label>
+  <div class="max-w-xl mx-auto bg-white p-8 border-2 border-purple-500 rounded-lg shadow-lg">
+    <div class="text-center">
+      <h2 class="text-purple-600 text-xl font-semibold mb-4">Bilder hochladen</h2>
+    </div>
+    <form action="/create" method="POST" enctype="multipart/form-data" class="space-y-6">
+      <div class="text-center grid grid-cols-3 gap-4">
+       
+        <label 
+        id="image1"
+        class="relative flex items-center justify-center w-24 h-24 mx-auto border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition bg-cover bg-center"
+        style="background-image: url('/uploads/');">
+       <p id="icon1"> Hauptbild</p>
+        <input type="file" name="image" class="hidden" id="image1" accept="image/*"> 
+      </label>
+
+      <% for (var i =2; i <=6;  i++ ) { %>
+        <label 
+        id="image<%=i%>"
+        class="relative flex items-center justify-center w-24 h-24 mx-auto border border-gray-300 rounded-md cursor-pointer hover:bg-gray-50 transition bg-cover bg-center"
+        style="background-image: url('/uploads/');">
+        <svg id="icon<%=i%>" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+        </svg>
+        
+        <input type="file" name="image" class="hidden" id="image<%=i%>" accept="image/*"> 
+      </label>
+        
+        <% } %>
+      
       </div>
 
       <div>
-        <h2 class="text-green-700 text-xl font-semibold mb-2">Startbit</h2>
-        <input type="number" min="1" max="1000000" name="startbit" class="w-full border border-gray-300 rounded-md p-2">
+        <h2 class="text-purple-600 text-xl font-semibold mb-2">Startprei</h2>
+        <input type="number" min="1" max="1000000" name="startbit" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition">
       </div>
-
+      
+  
       <div>
-        <h2 class="text-green-500 text-xl font-semibold mb-2">Laufzeit</h2>
-        <input type="number" min="7" max="14" name="time" id="time" class="w-full border border-gray-300 rounded-md p-2">
+        <h2 class="text-purple-600 text-xl font-semibold mb-2">Laufzeit</h2>
+        <input type="number" min="7" max="14" name="time" id="time" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition">
       </div>
-
+  
+      
       <div>
-        <h2 class="text-green-500 text-xl font-semibold mb-2">Kategorie</h2>
-        <select id="options" name="options" class="w-full border border-gray-300 rounded-md p-2">
+        <h2 class="text-purple-600 text-xl font-semibold mb-2">Kategorie</h2>
+        <select id="options" name="options" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition">
           <option value="Antiquitäten & Kunst">Antiquitäten & Kunst</option>
           <option value="Audio, TV & Video">Audio, TV & Video</option>
           <option value="Baby & Kind">Baby & Kind</option>
@@ -50,23 +72,38 @@
           <option value="option8">Option 8</option>
         </select>
       </div>
-
+  
       <div>
-        <h2 class="text-green-500 text-xl font-semibold mb-2">Titel</h2>
-        <input type="text" name="titel" id="titel" class="w-full border border-gray-300 rounded-md p-2">
+        <h2 class="text-purple-600 text-xl font-semibold mb-2">Titel</h2>
+        <input type="text" name="titel" id="titel"  class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition">
       </div>
-
+  
       <div>
-        <h2 class="text-green-500 text-xl font-semibold mb-2">Beschreibung</h2>
-        <input type="text" name="description" class="w-full border border-gray-300 rounded-md p-2">
+        <h2 class="text-purple-600 text-xl font-semibold mb-2">Beschreibung</h2>
+        <textarea name="description" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition resize-none" rows="4"></textarea>
       </div>
-
+  
       <div>
-        <input type="submit" value="Upload" class="bg-green-500 text-white rounded-md p-2 w-full cursor-pointer hover:bg-green-600">
+        <input type="submit" value="Upload" class="bg-purple-600 text-white rounded-md p-3 w-full cursor-pointer hover:bg-purple-700 transition">
       </div>
     </form>
   </div>
   <div class="pt-10"></div>
+  <script>
+    for (let i = 1; i <= 6; i++) {
+      document.getElementById('image'+[i]).addEventListener('change', function(event) {
+      if (event.target.files && event.target.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('image'+[i]).style.backgroundImage = 'url(' + e.target.result + ')';
+          document.getElementById('icon'+[i]).style.display = 'none';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      }
+    });
+} 
+
+  </script>
       <%- include('includes/footer.ejs') %>
 </body>
 </html>

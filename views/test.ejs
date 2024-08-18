@@ -5,43 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://maps.googleapis.com/maps/api/js?key==places"></script>
 
+    <style>
+      #map {
+          height: 500px;
+          width: 100%;
+      }
+  </style>
+  <script>
+      let map;
+      let marker;
+      let autocomplete;
+
+      function initMap() {
+          // Initialize the map centered on Switzerland
+          map = new google.maps.Map(document.getElementById("map"), {
+              center: { lat: 46.8182, lng: 8.2275 }, // Center of Switzerland
+              zoom: 7,
+          });
+
+          // Get the address input field
+          const input = document.getElementById("address");
+
+          // Initialize the autocomplete with restriction to Switzerland
+          autocomplete = new google.maps.places.Autocomplete(input, {
+              componentRestrictions: { country: "ch" },
+              fields: ["geometry", "name"],
+          });
+
+          // When the user selects an address, update the map
+          autocomplete.addListener("place_changed", () => {
+                const place = autocomplete.getPlace();
+
+                // Extract the "Gemeinde" (locality or administrative_area_level_2) information
+                let gemeinde;
+                place.address_components.forEach(component => {
+                    if (component.types.includes("locality")) {
+                        gemeinde = component.long_name; // Commonly represents the Gemeinde
+                    } else if (component.types.includes("administrative_area_level_2")) {
+                        gemeinde = gemeinde || component.long_name; // Use if locality is not available
+                    }
+                });
+
+                if (!gemeinde) {
+                    alert("Gemeinde information could not be found.");
+                    return;
+                }
+
+                // Use Google's Geocoding API to get the location of the Gemeinde
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ address: gemeinde + ", Switzerland" }, (results, status) => {
+                    if (status === "OK") {
+                        // Center the map on the Gemeinde
+                        map.setCenter(results[0].geometry.location);
+                        map.setZoom(12); // Adjust zoom level to show the Gemeinde
+
+                        // If a marker already exists, remove it
+                        if (marker) {
+                            marker.setMap(null);
+                        }
+
+                        // Add a marker at the Gemeinde location
+                        marker = new google.maps.Marker({
+                            position: results[0].geometry.location,
+                            map: map,
+                            title: gemeinde,
+                        });
+                    } else {
+                        alert("Geocode was not successful for the following reason: " + status);
+                    }
+                });
+            });
+        }
+  </script>
     <script>
-        // set the dropdown menu element
-const $targetEl = document.getElementById('dropdownMenu');
+      function initAutocomplete() {
+          // Get the address input field
+          var input = document.getElementById('address');
 
-// set the element that trigger the dropdown menu on click
-const $triggerEl = document.getElementById('dropdownButton');
+          // Create the autocomplete object and restrict it to geographical locations
+          var autocomplete = new google.maps.places.Autocomplete(input, {
+              types: ['geocode'] // Restrict to address suggestions only
+          });
 
-// options with default values
-const options = {
-    placement: 'bottom',
-    triggerType: 'click',
-    offsetSkidding: 0,
-    offsetDistance: 10,
-    delay: 300,
-    ignoreClickOutsideClass: false,
-    onHide: () => {
-        console.log('dropdown has been hidden');
-    },
-    onShow: () => {
-        console.log('dropdown has been shown');
-    },
-    onToggle: () => {
-        console.log('dropdown has been toggled');
-    },
-};
+          // Prevent form submission on Enter if a suggestion is still being focused
+          input.addEventListener('keydown', function(event) {
+              if (event.key === 'Enter') {
+                  event.preventDefault();
+              }
+          });
 
-// instance options object
-const instanceOptions = {
-  id: 'dropdownMenu',
-  override: true
-};
+          // Fill in the address components when a user selects an address from the suggestions
+          autocomplete.addListener('place_changed', function() {
+              var place = autocomplete.getPlace();
 
-    </script>
+              // You can extract and fill other form fields with address details if needed
+              // For example: 
+              // document.getElementById('city').value = place.address_components[3].long_name;
+              // You can explore 'place' object to get more details like postal code, country, etc.
+          });
+      }
+  </script>
 </head>
-<body>
- 
-<h1>hi</h1>
+
+<body onload="initMap()">
+  <h2>Address Form with Google Places Autocomplete</h2>
+  <h2>Address Autocomplete and Map Display</h2>
+  <form>
+      <label for="address">Address:</label><br>
+      <input type="text" id="address" name="address" style="width: 300px;"><br><br>
+  </form>
+
+  <!-- The map container -->
+  <div id="map"></div>
 </body>
 </html>
