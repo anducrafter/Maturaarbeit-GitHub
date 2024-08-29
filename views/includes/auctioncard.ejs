@@ -86,6 +86,10 @@
       const paginationContainer = document.getElementById('pagination');
       paginationContainer.innerHTML = ''; // Clear existing pagination
   
+      // Ensure the current page is within a valid range
+      if (currentPage < 1) currentPage = 1;
+      if (currentPage > totalPages) currentPage = totalPages;
+  
       // Calculate the start and end of the visible page range
       let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
       let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
@@ -133,7 +137,7 @@
   
     // Initialize pagination on page load
     createPagination();
-  </script>
+</script>
  
 </body>
 </html>

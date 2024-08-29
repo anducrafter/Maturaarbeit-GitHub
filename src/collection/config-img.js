@@ -7,16 +7,22 @@ connect.then(() =>{
     console.log("Database nicht connected");
 })
 
-const ImgSchema = new mongoose.Schema({
+const UserEvaluate = new mongoose.Schema({
     name:{
         type: String,
     },
-    img:{
-    data: Buffer,
-    contentType: String,
+    text:{
+    type: String,
    
+    },
+    evaluate:{
+        type: Number
+    },
+    date:{
+        type: Date
     }
+
 });
 
-const collection = new mongoose.model("Image",ImgSchema);
+const collection = new mongoose.model("UserEvaluate",UserEvaluate);
 module.exports = collection;

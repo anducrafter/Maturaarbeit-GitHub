@@ -11,7 +11,6 @@ router.get("/au/:id", async (req,res) =>{
       
         const auction =  await auctioncollection.findOne({_id: req.params.id});
         const user = await collection.findOne({name: req.session.user}) || false
-        console.log(process.env.API)
         res.render('auction', { auction: auction, id: req.params.id, login : req.session.user , query : req.query, user: user, API: process.env.API});
         
     }catch(err){

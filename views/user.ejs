@@ -3,9 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Benutzer</title>
 </head>
-<body>
-    
+<body  class="flex flex-col  h-screen">
+    <%- include('includes/header.ejs') %>
+
+    <div class="flex items-center m-5 ">
+     
+        <% if (user && user.img) { %>
+          <img class="w-16 h-16 rounded-full mr-4" src="/uploads/<%=user.img%>" alt="user photo">
+        <% } else { %>
+          <img class="w-16 h-16 rounded-full mr-4" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="user photo">
+        <% } %>
+        <div>
+          <h2 class="text-lg font-bold"><%= user.name %></h2>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold"><%= user.description %></h2>
+        </div>
+
+        <div class="text-xl text-gray-500 ml-5">Bewertungen</div>
+      </div>
+      <% if (evaluation.length > 0) { %>
+      <% evaluation.forEach(eva => { %>
+        <script>console.log(" test ", "<%=eva.name%>")</script>
+
+        <article class="ml-10">
+          <div class="flex items-center mb-4">
+              <img class="w-10 h-10 me-4 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt="">
+              <div class="font-medium dark:text-white">
+                  <p><%=eva.name%></p>
+              </div>
+          </div>
+          <div class="flex items-center mb-1 space-x-1 rtl:space-x-reverse">
+           
+            <% for(let i = 1; i <= eva.evaluate; i++ ){  %>
+             
+              <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+                <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+            </svg>
+              <% } %>
+
+          </div>
+         
+        <time class=" text-gray-500 dark:text-gray-400"><%=eva.date.toLocaleDateString()%></time>
+          <p class="mb-2"><%=eva.text%></p>
+      </article>
+      
+      
+
+        <% }) %>
+<%}%>
+  
+    <%- include('includes/footer.ejs') %>
 </body>
 </html>

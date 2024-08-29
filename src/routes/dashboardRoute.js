@@ -3,7 +3,7 @@ const router=express.Router();
 const collection = require("../collection/config");
 const auctioncollection = require("../collection/config-create");
 const auth = require("../public/javascript/auth");
-
+const evaluatecollection = require("../collection/config-img");
 router.get("/dashboard/:type", auth.isAuthenticated, async (req,res) =>{
    
     try{
@@ -47,8 +47,7 @@ router.get("/dashboard/u/aufinish/:id", auth.isAuthenticated, async (req,res) =>
         
         const auction = await auctioncollection.findOne({_id: req.params.id});
         const user = await collection.findOne({name: req.session.user})
-       
-        const date = new Date();
+      
         if(auction.biter != req.session.user && auction.timestamp < date.getTime()) {
             const auction =  await auctioncollection.find({});
             res.render("index",{auctions: auction})
@@ -84,7 +83,7 @@ router.get("/dashboard/c/aufinish/:id", auth.isAuthenticated, async (req,res) =>
     
 })
 
-router.post("/dashboard/u/aufinish/:id", auth.isAuthenticated , async(req,res) =>{
+router.post("/aufinish/u/:id", auth.isAuthenticated , async(req,res) =>{
     const auction =  await auctioncollection.findOne({_id: req.params.id});
     let status = auction.status;
     if(status == 4){
@@ -99,11 +98,21 @@ router.post("/dashboard/u/aufinish/:id", auth.isAuthenticated , async(req,res) =
 
     status++;
     await auctioncollection.updateOne({_id: req.params.id},{$set: {status: status}})
-    res.redirect("dashboard/user/userauctionfinish/"+req.params.id)
+   
+    console.log(req.body.description, req.body.rating)
+    const raiting = {
+       name: auction.creator, 
+       text: req.body.description,
+       evaluate : req.body.rating,
+       date: Date.now()
+
+    }
+    await evaluatecollection.insertMany(raiting);
+    res.redirect("/dashboard/u/aufinish/"+req.params.id)
 
 });
 
-router.post("/dashboard/c/aufinish/:id", auth.isAuthenticated , async(req,res) =>{
+router.post("/aufinish/c/:id", auth.isAuthenticated , async(req,res) =>{
     const auction =  await auctioncollection.findOne({_id: req.params.id});
  
     let status = auction.status;
@@ -118,7 +127,7 @@ router.post("/dashboard/c/aufinish/:id", auth.isAuthenticated , async(req,res) =
 
     status++;
     await auctioncollection.updateOne({_id: req.params.id},{$set: {status: status}})
-    res.redirect("/dashboard/c/aufinish"+req.params.id);
+    res.redirect("/dashboard/c/aufinish/"+req.params.id);
 
 });
 

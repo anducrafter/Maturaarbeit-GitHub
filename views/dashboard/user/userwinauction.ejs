@@ -66,7 +66,7 @@
                   </td>
                   <td class="px-4 py-2 text-gray-600 text-sm sm:text-base lg:text-lg">Status : <%= auc.status== 1 ? "noch zu Bezahlen" : auc.status== 2 ? "Bezahlt" : auc.status== 3 ? "Gesendet" : "Abgeschlossen" %></td>
                   <td class="px-4 py-2">
-                    <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
+                    <button class="<%= auc.status == 4 ? 'bg-green-500' : 'bg-red-500 hover:bg-purple-600' %> text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
                       <a href="http://localhost:5000/dashboard/u/aufinish/<%= auc._id%>"> <%=auc.status== 4 ? "Abgeschlossen" : "Abschliessen"%></a>
                     </button>
                   </td>
@@ -90,7 +90,7 @@
                     </script>
                   </div>
                   <td class="px-4 py-2 text-gray-600 text-sm sm:text-base lg:text-lg">Status : <%= auc.status== 1 ? "noch zu Bezahlen" : auc.status== 2 ? "Bezahlt" : auc.status== 3 ? "Gesendet" : "Abgeschlossen" %></td>
-                  <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
+                  <button class="<%= auc.status == 4 ? 'bg-green-500' : 'bg-red-500 hover:bg-purple-600' %> text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
                     <a href="http://localhost:5000/dashboard/u/aufinish/<%= auc._id%>"><%=auc.status== 4 ? "Abgeschlossen" : "Abschliessen"%></a>
                   </button>
                 </div>

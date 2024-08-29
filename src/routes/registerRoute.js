@@ -3,11 +3,31 @@ const router=express.Router();
 const collection = require("../collection/config");
 const auctioncollection = require("../collection/config-create");
 const auth = require("../public/javascript/auth");
-const bycript = require("bcrypt");
+const nodemailer = require("nodemailer");
+const bycript = require("bcryptjs");
 
 router.get("/register", (req,res) =>{
     res.render("sign",{login : req.session.user});
 })
+
+let transporter = nodemailer.createTransport({
+    host: 'localhost',
+    port: 25, // Port for submission with TLS
+    secure: false, // false for port 587
+    tls: {
+        rejectUnauthorized: false // Ignore self-signed certificate
+    }
+});
+
+  const sendMail = async (transporter,mailOption) =>{
+    try{
+        await transporter.sendMail(mailOption);
+        console.log("Email sended succecfully")
+    }catch (err){
+        console.log(err)
+    }
+  }
+
 
 router.post("/register",async (req,res) =>{
     try {
@@ -34,8 +54,26 @@ router.post("/register",async (req,res) =>{
     const hasedPassword = await bycript.hash(data.password,9);
     data.password = hasedPassword;
     const userdata = await collection.insertMany(data);
-   
-    res.send("Erfolgreich User erstellt!")
+    res.render("mails/registermail", {name: data.email}, async (err, html )=>{
+        if(err){
+            res.status(303);
+            return;
+        }
+        let mailOption = {
+            from: {
+                name: "anducrafter",
+                address: "<anducrafter@repli.ch>"
+            },
+            to: "andusucht@gmail.com",
+            subject: "Repli.ch, Email Bestätigung",
+            text: "Hello world",
+            html: html
+          }
+
+          sendMail(transporter,mailOption)
+
+    });
+    next();
    }
    
 }catch(err){

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body>
+    
+
+    <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+        <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <% users.forEach(user => {%>
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700 transition ease-in-out">
+                <td class="py-4 px-6">
+                    <div class="flex items-center space-x-4 rtl:space-x-reverse">
+                        <!-- User Avatar -->
+                        <div class="flex-shrink-0">
+                            <img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="<%= user.name %>">
+                        </div>
+                        <!-- User Info -->
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold text-gray-900 dark:text-white">
+                                <%= user.name %>
+                            </p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                <%= user.email %>
+                            </p>
+                        </div>
+                        <!-- Actions -->
+                        <div class="flex-shrink-0">
+                            <button class="bg-indigo-500 text-white text-sm px-3 py-2 rounded-md hover:bg-indigo-600 transition ease-in-out">
+                                Edit
+                            </button>
+    
+                            <!-- Delete Button -->
+                            <button 
+                                type="button" 
+                                class="bg-red-500 text-white text-sm px-3 py-2 rounded-md hover:bg-red-600 ml-2 transition ease-in-out deleteButton"
+                                data-user-name="<%= user.name %>"
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+    
+    <!-- Confirm Popup -->
+    <div id="confirmPopup" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
+        <div class="relative p-4 w-full max-w-md">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                    </svg>
+                    <h3 id="popupUserName" class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Möchtest du wirklich den User [] löschen?</h3>
+                    <form id="deleteForm" action="/delete-user" method="POST">
+                        <input type="hidden" name="userName" id="deleteUserName">
+                        <button type="submit" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                            Confirm
+                        </button>
+                    </form>
+                    <button id="cancelButton" type="button" class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        No, cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <script>
+        // Get the popup and action buttons
+        const confirmPopup = document.getElementById('confirmPopup');
+        const cancelButton = document.getElementById('cancelButton');
+        const deleteForm = document.getElementById('deleteForm');
+        const deleteUserNameInput = document.getElementById('deleteUserName');
+        const popupUserName = document.getElementById('popupUserName');
+    
+        // Add event listeners to all delete buttons
+        document.querySelectorAll('.deleteButton').forEach(button => {
+            button.addEventListener('click', function(event) {
+                const userName = event.target.getAttribute('data-user-name');
+                deleteUserNameInput.value = userName;
+                popupUserName.textContent = `Möchtest du wirklich den User: ${userName} löschen?`;
+                confirmPopup.classList.remove('hidden');
+            });
+        });
+    
+        // Hide the popup when cancel is clicked
+        cancelButton.addEventListener('click', function() {
+            confirmPopup.classList.add('hidden');
+        });
+    </script>
+
+</body>
+</html>

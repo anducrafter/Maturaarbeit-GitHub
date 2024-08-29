@@ -14,7 +14,8 @@ const searchroute = require("./routes/searchRoute")
 const loginroute = require("./routes/loginRoute")
 const registerroute = require("./routes/registerRoute")
 const createroute = require("./routes/createRoute")
-
+const userroute = require("./routes/userRoute")
+const userlistroute = require("./routes/userlistRoute.js");
 const app = express();
 
 
@@ -82,7 +83,8 @@ const transporter = nodemailer.createTransport({
   app.use("/", loginroute)
   app.use("/",registerroute)
   app.use("/",createroute)
-
+  app.use("/",userroute)
+  app.use("/",userlistroute)
 
 /*
 app.get("/category/:id",async (req,res) =>{
@@ -119,5 +121,5 @@ const port = 5000
 app.listen(port, () =>{
   
     console.log('Server is running on Port:',port);
-    sendMail(transporter,mailOption)
+   
 })

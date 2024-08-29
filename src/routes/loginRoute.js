@@ -3,7 +3,7 @@ const router=express.Router();
 const collection = require("../collection/config");
 const auctioncollection = require("../collection/config-create");
 const auth = require("../public/javascript/auth");
-const bycript = require("bcrypt");
+const bycript = require("bcryptjs");
 
 router.get("/login" , async (req,res) =>{
     const user =  await collection.find({name: req.session.user}) || false
