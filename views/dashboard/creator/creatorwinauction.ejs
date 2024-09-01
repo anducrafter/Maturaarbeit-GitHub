@@ -48,7 +48,7 @@
               <tr class="bg-white border-b">
                 <td class="px-4 py-2">
           
-                  <a href="http://localhost:5000/au/<%= auc._id %>">
+                  <a href="/au/<%= auc._id %>">
                     <div class="w-24 h-24 sm:w-32 sm:h-32 lg:w-48 lg:h-48 flex items-center justify-center overflow-hidden  ">
                     <% if(auc.biter  === "") { %>
                       <img class=" filter grayscale  object-cover w-full h-full" src="/uploads/<%= auc.img[0] %>" alt="<%= auc.titel %>">
@@ -74,7 +74,7 @@
                   <%}%>
                 <td class="px-4 py-2">
                   <button class="<%= auc.status == 4 ? 'bg-green-500' : 'bg-red-500 hover:bg-purple-600' %>   text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
-                    <a href="http://localhost:5000/dashboard/c/aufinish/<%= auc._id%>"> <%=auc.status== 4 ? "Abgeschlossen" : "Abschliessen"%></a>
+                    <a href="c/aufinish/<%= auc._id%>"> <%=auc.status== 4 ? "Abgeschlossen" : "Abschliessen"%></a>
                   </button>
                 </td>
                
@@ -85,7 +85,7 @@
           <div class="grid grid-cols-1 sm:hidden">
             <% auctions.forEach(auc => { %>
               <div class="bg-white border rounded-lg p-4 shadow mb-4">
-                <a href="http://localhost:5000/au/<%= auc._id%>">
+                <a href="/au/<%= auc._id%>">
                   <div class="w-full h-48 flex items-center justify-center overflow-hidden mb-4 filter grayscale">
                   <% if(auc.biter  === "") { %> 
                     <img class="filter grayscale object-cover w-full h-full" src="/uploads/<%= auc.img[0] %>" alt="<%= auc.titel %>">
@@ -109,7 +109,7 @@
                   <td class="px-4 py-2 text-gray-600">Kein Käufer gefunden</td>
                   <%}%>
                 <button class="<%= auc.status == 4 ? 'bg-green-500' : 'bg-red-500 hover:bg-purple-600' %> text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
-                  <a href="http://localhost:5000/dashboard/c/aufinish/<%= auc._id%>"><%=auc.status== 4 ? "Abgeschlossen" : "Abschliessen"%></a>
+                  <a href="c/aufinish/<%= auc._id%>"><%=auc.status== 4 ? "Abgeschlossen" : "Abschliessen"%></a>
                 </button>
               </div>
             <% }) %>

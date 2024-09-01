@@ -23,8 +23,31 @@
                 <label for="password">Passwort</label>
                 <input type="password" id="password" name="password" placeholder="Enter your password">
             </div>
+            <div id="messageDiv"></div>
             <button type="submit">Registrieren</button>
         </form>
     </div>
+
+    <script>
+        // Beispiel-Funktion um die Nachricht anzuzeigen
+        async function showMessage() {
+    const messageDiv = document.getElementById('messageDiv');
+    try {
+        const response = await fetch('/register');
+        if (!response.ok) {
+            throw new Error(`Serverfehler: ${response.status}`);
+        }
+        const data = await response.json();
+        messageDiv.textContent = data.message;
+        messageDiv.style.color = 'red';
+    } catch (error) {
+        messageDiv.textContent = 'Es gab ein Problem beim Abrufen der Nachricht.';
+        messageDiv.style.color = 'red';
+        console.error('Fehler:', error);
+    }
+}
+
+showMessage();
+    </script>
 </body>
 </html>

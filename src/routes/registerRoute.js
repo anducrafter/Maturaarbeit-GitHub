@@ -30,8 +30,7 @@ let transporter = nodemailer.createTransport({
 
 
 router.post("/register",async (req,res) =>{
-    try {
-       
+    try {   
     const data = {
         name: req.body.username,
         email: req.body.email,
@@ -43,7 +42,8 @@ router.post("/register",async (req,res) =>{
         phone: null,
         address: "",
         file: "",
-        img: ""
+        img: "",
+        verify : false
 
     }
    const username = await collection.findOne({name: data.name})
@@ -60,20 +60,17 @@ router.post("/register",async (req,res) =>{
             return;
         }
         let mailOption = {
-            from: {
-                name: "anducrafter",
-                address: "<anducrafter@repli.ch>"
-            },
+            from: 'Repli.ch  <administrator@repli.ch>',
             to: "andusucht@gmail.com",
             subject: "Repli.ch, Email Bestätigung",
-            text: "Hello world",
+            text: "Regestrieren für Repli",
             html: html
           }
 
           sendMail(transporter,mailOption)
-
+          res.status(500).send({message: "Email wurde verschickt, bitte Bestätigen"})
     });
-    next();
+   
    }
    
 }catch(err){

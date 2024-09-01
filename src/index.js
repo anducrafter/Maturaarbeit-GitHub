@@ -3,7 +3,7 @@ const fs = require('fs');
 const nodemailer = require("nodemailer");
 const session = require("express-session");
 const cookieParser = require('cookie-parser');
-
+const path = require('path');
 //rooters
 const indexroot = require("./routes/indexRoute")
 const auctionroute = require("./routes/auctionRoute")
@@ -30,7 +30,7 @@ app.use(session({
 
 
 app.set("view engine","ejs")
-
+app.set('views', path.join(__dirname, '..', 'views'))
 //Daten werdfen in Json übergeben
 
 app.use(express.json());
@@ -39,7 +39,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 //Wieso geht das ned ?
-app.use(express.static('src/public'));
+app.use( express.static(path.join(__dirname, 'public')));
 
 
 //Node emailer
