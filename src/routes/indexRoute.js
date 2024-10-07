@@ -72,7 +72,7 @@ router.get("/",  loadAuthenticated, async (req, res) => {
       console.log(req.session.user)
       console.log(user)
       console.log(user.img)
-     res.render('index', { auctions: auction, login : req.session.user, query : query, user: user, lenght: lenght});
+     res.render('index', { auctions: auction, login : req.session.user, query : query, user: user, lenght: lenght, suchen: false});
   }catch(err){
       console.log(err)
   }

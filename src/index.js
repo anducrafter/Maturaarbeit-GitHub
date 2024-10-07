@@ -4,6 +4,7 @@ const nodemailer = require("nodemailer");
 const session = require("express-session");
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const flash = require("express-flash")
 //rooters
 const indexroot = require("./routes/indexRoute")
 const auctionroute = require("./routes/auctionRoute")
@@ -34,6 +35,7 @@ app.set('views', path.join(__dirname, '..', 'views'))
 //Daten werdfen in Json übergeben
 
 app.use(express.json());
+app.use(flash())
 
 
 app.use(express.urlencoded({ extended: false }));

@@ -11,7 +11,15 @@ router.get("/au/:id", async (req,res) =>{
       
         const auction =  await auctioncollection.findOne({_id: req.params.id});
         const user = await collection.findOne({name: req.session.user}) || false
-        res.render('auction', { auction: auction, id: req.params.id, login : req.session.user , query : req.query, user: user, API: process.env.API});
+        
+        let query = req.query;
+       
+        if (Object.keys(req.query).length === 0){
+            query = "";
+        }else {
+          query = "?"+req.originalUrl.split('?')[1];
+        }
+        res.render('auction', { auction: auction, id: req.params.id, login : req.session.user , query : query, user: user, API: process.env.API, suchen: false});
         
     }catch(err){
         console.log(err)

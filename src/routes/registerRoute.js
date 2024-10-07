@@ -5,9 +5,9 @@ const auctioncollection = require("../collection/config-create");
 const auth = require("../public/javascript/auth");
 const nodemailer = require("nodemailer");
 const bycript = require("bcryptjs");
-
+const flash = require("express-flash")
 router.get("/register", (req,res) =>{
-    res.render("sign",{login : req.session.user});
+    res.render("sign",{login : req.session.user, message : req.flash()});
 })
 
 let transporter = nodemailer.createTransport({
@@ -30,6 +30,7 @@ let transporter = nodemailer.createTransport({
 
 
 router.post("/register",async (req,res) =>{
+    
     try {   
     const data = {
         name: req.body.username,
@@ -42,14 +43,15 @@ router.post("/register",async (req,res) =>{
         phone: null,
         address: "",
         file: "",
-        img: "",
+        img: "default.jpg",
         verify : false
 
     }
    const username = await collection.findOne({name: data.name})
    const email = await collection.findOne({email: data.email})
    if(username || email ){
-    res.send("Bitte gib ein anderen username oder passwort an")
+    req.flash("error","Die Email oder das Passwort werden schon benutzt");
+    return res.redirect("/register");
    }else{
     const hasedPassword = await bycript.hash(data.password,9);
     data.password = hasedPassword;
@@ -68,15 +70,17 @@ router.post("/register",async (req,res) =>{
           }
 
           sendMail(transporter,mailOption)
-          res.status(500).send({message: "Email wurde verschickt, bitte Bestätigen"})
     });
-   
+    req.flash("error","Email wurde erfolgreich verschickt, bitte bestätigen Sie diese");
+    return res.redirect("/register");
    }
    
 }catch(err){
     console.log(err)
    
 }
+
+
 
 });
 

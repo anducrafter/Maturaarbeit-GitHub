@@ -9,41 +9,99 @@
 
   <div id="div" class="flex flex-col items-center  bg-gray-100 p-4 rounded-lg shadow-md space-y-4" >
     <div class="flex items-center border-2 border-purple-500 rounded-lg overflow-hidden w-full max-w-4xl">
-      <input type="text" name="search" id="search" class="px-4 py-2 flex-1 focus:outline-none" placeholder="Search...">
+      <input type="text" name="search" id="search"  class="px-4 py-2 flex-1 focus:outline-none" placeholder="Search...">
       <button type="submit" id="searchbutton" class="bg-purple-600 text-white px-4 py-2 hover:bg-purple-700 transition-colors">Suchen</button>
     </div>
+  
+    <div class="flex flex-col items-center space-y-6 mb-6">
     
-    <div class="flex w-full max-w-4xl">
-      <h1>Wähle deine Kategorie aus</h1> <br>
+      <!-- Dropdown Menu -->
+      <div class="w-full max-w-xs">
+     
+        <select id="linkSelect" class="w-full p-3 border border-purple-500 bg-violet-600  rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all duration-300 ease-in-out" onchange="navigateToLink()">
+          <option value="" disabled selected>Alle Kategorien</option>
+          <option value="/s/Antiquitäten & Kunst/<%= query%>">Antiquitäten & Kunst</option>
+          <option value="/s/Audio, TV & Video/<%= query%>">Audio, TV & Video</option>
+          <option value="/s/Baby & Kind/<%= query%>">Baby & Kind</option>
+          <option value="/s/Bücher/<%= query%>">Bücher</option>
+          <option value="/s/Fahrzeuge/<%= query%>">Fahrzeuge</option>
+        </select>
+       
+
       </div>
-      <div class="flex w-full justify-center space-x-4">
-          <a href="/s/Antiquitäten & Kunst/<%= query%>" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Antiquitäten & Kunst</a>
-          <a href="/s/Audio, TV & Video/<%= query%> " class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Audio, TV & Video</a>
-          <a href="/s/Baby & Kind/<%= query%>" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Baby & Kind</a>
-          <a href="/s/Bücher/<%= query%>" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Bücher</a>
-          <a href="/s/Fahrzeuge" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Fahrzeuge</a>
+  
+      <!-- Filter and Sort Section -->
+      <%if(suchen == true){%>
+      <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Filter and Sort by Price</h1>
+  
+        <!-- Price Filter -->
+         
+        <div class="mb-6">
+          <h1><%=price.max%></h1>
+          <label for="priceRange" class="block text-gray-700 font-medium mb-2">Maximaler Preis</label>
+          <input type="range" id="priceRange" min="0" max="<%=price.max%>" value="<%=price.price || 100%>" class="w-full appearance-none bg-gray-200 rounded-lg h-2 mb-2 cursor-pointer" onchange="updatePriceLink(this.value)" oninput="updatePrice(this.value)">
+          <p class="text-gray-800">Maximaler Preis: <span id="priceDisplay" class="font-bold"><%=price.price || price.max%> CHF</span></p>
         </div>
+  
+        <!-- Sort Options -->
+        <div>
+          <label for="sort" class="block text-gray-700 font-medium mb-2">sorteiren</label>
+          <select onchange="sortToLink()" id="sort" class="w-full p-3 border border-gray-300 bg-white text-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 ease-in-out" onchange="sortProducts()">
+            <option value="" selected>Sortieren nach</option>
+            <option value="1">Preis: aufsteigend</option>
+            <option value="-1">Preis: absteigend</option>
+          </select>
+        </div>
+      </div>
+      <%}%>
+    </div>
+
+
+    <div class="flex w-full justify-center space-x-4">
+      <!-- Action Buttons -->
+      <a href="/s/Antiquitäten & Kunst/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Antiquitäten & Kunst</a>
+      <a href="/s/Audio, TV & Video/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Audio, TV & Video</a>
+      <a href="/s/Baby & Kind/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Baby & Kind</a>
+      <a href="/s/Bücher/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Bücher</a>
+      <a href="/s/Fahrzeuge/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Fahrzeuge</a>
+    </div>
   </div>
 
 
 
+
+
+
+  
   <form id="form" action="/" method="POST" class="flex flex-col items-center  bg-gray-100 p-4 rounded-lg shadow-md space-y-4" >
     <div class="flex items-center border-2 border-purple-500 rounded-lg overflow-hidden w-full max-w-4xl">
       <input type="text" name="search" id="search" class="px-4 py-2 flex-1 focus:outline-none" placeholder="Search...">
       <button type="submit" id="searchbutton" class="bg-purple-600 text-white px-4 py-2 hover:bg-purple-700 transition-colors">Suchen</button>
     </div>
     
-    <div class="flex w-full max-w-4xl">
-      <h1>Wähle deine Kategorie aus</h1> <br>
-      </div>
-      <div class="flex w-full justify-center space-x-4">
-          <a href="/s/Antiquitäten & Kunst/<%= query%>" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Antiquitäten & Kunst</a>
-          <a href="/s/Audio, TV & Video/<%= query%> " class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Audio, TV & Video</a>
-          <a href="/s/Baby & Kind/<%= query%>" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Baby & Kind</a>
-          <a href="/s/Bücher/<%= query%>" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Bücher</a>
-          <a href="/s/Fahrzeuge/<%= query%>" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Fahrzeuge</a>
-        </div>
+    <div class="flex w-full justify-center space-x-4 mb-6">
+      <!-- Dropdown Menu -->
+      <select id="linkSelect" class="w-full max-w-xs p-3 border border-purple-500 bg-violet-600 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-purple-400 transition-all" onchange="navigateToLink()">
+        <option value="" disabled selected>Alle Kategorien</option>
+        <option value="/s/Antiquitäten & Kunst/<%= query%>">Antiquitäten & Kunst</option>
+        <option value="/s/Audio, TV & Video/<%= query%>">Audio, TV & Video</option>
+        <option value="/s/Baby & Kind/<%= query%>">Baby & Kind</option>
+        <option value="/s/Bücher/<%= query%>">Bücher</option>
+        <option value="/s/Fahrzeuge/<%= query%>">Fahrzeuge</option>
+      </select>
+    </div>
+    <div class="flex w-full justify-center space-x-4">
+      <!-- Action Buttons -->
+      <a href="/s/Antiquitäten & Kunst/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Antiquitäten & Kunst</a>
+      <a href="/s/Audio, TV & Video/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Audio, TV & Video</a>
+      <a href="/s/Baby & Kind/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Baby & Kind</a>
+      <a href="/s/Bücher/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Bücher</a>
+      <a href="/s/Fahrzeuge/<%= query%>" class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:bg-purple-700 transition-colors">Fahrzeuge</a>
+    </div>
+
   </form>
+
 
 
 
@@ -79,6 +137,41 @@ window.location.href = url;
       
        
       });
+
+
+
+      function navigateToLink() {
+      const select = document.getElementById("linkSelect");
+      const url = select.value;
+
+      if (url) {
+        window.location.href = url; // Redirect to the selected link
+      }
+    }
+
+    function sortToLink() {
+      const select = document.getElementById("sort");
+      const sort = select.value; 
+      const url = new URL(window.location.href);
+      url.searchParams.set('sort', sort); 
+      if (url) {
+        window.location.href = url; // Redirect to the selected link
+      }
+    }
+
+    function updatePrice(value) {
+      document.getElementById('priceDisplay').textContent = `${value} CHF`;
+      const url = new URL(window.location.href);
+    }
+
+    function updatePriceLink(value){
+      const url = new URL(window.location.href);
+      const sort = value;
+      url.searchParams.set('price', sort); 
+      if (url) {
+        window.location.href = url; // Redirect to the selected link
+      }
+    }
      </script>
 
 

@@ -27,7 +27,7 @@
         <a href="/">Repli.ch</a>
       </div>
 <div class="w-12 h-12"> 
-  <a href="create">
+  <a href="/create">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
     </svg>  
@@ -37,6 +37,7 @@
       
 <%if (login == null) {%>
 
+  
   <button class="block lg:hidden text-white focus:outline-none" id="navbar-toggler">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -46,14 +47,14 @@
       <nav class="hidden lg:flex w-full lg:w-auto" id="navbar-menu">
         <ul class="lg:flex lg:items-center lg:ml-auto space-y-4 lg:space-y-0 lg:space-x-8 text-lg">
           <li><a href="/login" class="hover:text-gray-200">login</a></li>
-          <li><a href="sign" class="hover:text-gray-200">Regestrieren</a></li>
+          <li><a href="/register" class="hover:text-gray-200">Regestrieren</a></li>
         </ul>
       </nav>
 <% } else { %>
 
       <div class="relative inline-block">
         <button id="dropdownButton" class=class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" type="button">
-          <%if(user != false && user.img){%>
+          <%if(user.img){%>
             <img class="w-16 h-16 rounded-full" src="/uploads/<%=user.img%>" alt="user photo">
         <%  }else {%>
           <img class="w-16 h-16 rounded-full" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="user photo">

@@ -9,9 +9,10 @@
 <body class="flex flex-col  h-screen">
 
   <%- include('includes/header.ejs') %>
-  <%- include('includes/searchbar.ejs') %>
+  <%- include('includes/searchbar.ejs', true) %>
    
 
+    <!-- Products List -->
         <%- include('includes/auctioncard.ejs',auctions) %>
         <%- include('includes/footer.ejs') %>
 </body>

@@ -23,10 +23,7 @@ router.get("/au/edit/:id", auth.isAuthenticated, async (req,res) =>{
 
 
 router.post("/au/edit/:id",multer.upload, auth.isAuthenticated, async(req,res) =>{
-    
     try{
-
-       
        const auction =  await auctioncollection.findOne({_id: req.params.id});
        if(auction == undefined){
         return;
@@ -65,9 +62,6 @@ router.post("/au/edit/:id",multer.upload, auth.isAuthenticated, async(req,res) =
           newimg = []; // Fallback: Leeres Array
         }
       }
-     
-      console.log( typeof newimg)
-
       newimg.sort((a, b) => {
         if (a === b) return 0
         if (a === null) return 1
@@ -83,25 +77,9 @@ router.post("/au/edit/:id",multer.upload, auth.isAuthenticated, async(req,res) =
               oldpicture.push(files[count].filename)
             }
           })
-    }
- 
-    
-
-
-
-        console.log(oldpicture);
-
-
-     
-
-
-     
+    }   
      const asdfe =   await auctioncollection.updateOne({_id: req.params.id}, {$set : {titel: title, description: description,titel: title , startbit: startbit, img: oldpicture}});
        res.redirect("/au/"+req.params.id)
-
-
-      
-
    }catch(err){
    console.log(err)
    }
