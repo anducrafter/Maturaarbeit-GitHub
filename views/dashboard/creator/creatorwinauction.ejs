@@ -69,14 +69,24 @@
                 <script>console.log("<%=auc.biter%>")</script>
                 <% if(auc.biter !== "") { %>
                 <td class="px-4 py-2 text-gray-600 text-sm sm:text-base lg:text-lg">Status : <%= auc.status== 1 ? "noch zu Bezahlen" : auc.status== 2 ? "Bezahlt" : auc.status== 3 ? "Gesendet" : "Abgeschlossen" %></td>
-                <%}else {%>
-                  <td class="px-4 py-2 text-gray-600">Kein Käufer gefunden</td>
-                  <%}%>
+                
                 <td class="px-4 py-2">
                   <button class="<%= auc.status == 4 ? 'bg-green-500' : 'bg-red-500 hover:bg-purple-600' %>   text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
                     <a href="c/aufinish/<%= auc._id%>"> <%=auc.status== 4 ? "Abgeschlossen" : "Abschliessen"%></a>
                   </button>
                 </td>
+                <%}else {%>
+                  <td class="px-4 py-2 text-gray-600">Kein Käufer gefunden</td>
+                  <td class="px-4 py-2">
+                    <form action="/dashboard/<%= auc._id %>" method="post">
+                      <button class="bg-red-500 hover:bg-purple-600  text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
+                       Verlängern
+                      </button>
+                    </form>
+                    
+                  </td>
+                  <%}%>
+
                
               </tr>
             <% }) %>

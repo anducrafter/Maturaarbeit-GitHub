@@ -11,24 +11,18 @@
   <%- include('includes/header.ejs', login) %>
   <%- include('includes/searchbar.ejs') %>
   <div class="text-center pt-5 pb-5">
-    <a href="create" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Auktion erstellen</a>
+    <a  href="create" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">Auktion erstellen</a>
+    <div class="pt-5 flex justify-center items-center  bg-gray-100">
+    <div class="bg-white shadow-lg rounded-lg p-6 max-w-md">
+        <h1 class="text-2xl font-bold text-center text-gray-800 mb-4">Willkommen bei Repli.ch!</h1>
+        <p class="pt-5 text-center text-gray-600 text-lg leading-relaxed">
+            Kaufe und verkaufe, wie du möchtest.
+        </p>
+    </div>
+</div>
   </div>
 
  
-  
-    <!---Hier sollte noch ein JS reinkommen,
-      <option value="Antiquitäten & Kunst">Antiquitäten & Kunst</option>
-    <option value="Audio, TV & Video">Audio, TV & Video</option>
-    <option value="Baby & Kind">Baby & Kind </option>
-    <option value="Bücher">Bücher </option>
-    <option value="Fahrzeuge">Fahrzeuge </option>
-    <option value="option6">Option </option>
-    <option value="option7">Option </option>
-    <option value="option8">Option </option>
-</select>
-    
-   
-    wo es automatisch bearbeitet wird-->
 
     <%- include('includes/auctioncard.ejs',auctions) %>
 

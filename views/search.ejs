@@ -5,36 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Suchen</title>
     <link  rel="stylesheet" href="/src/public/css/index.css">
-
-    <script> 
-      function timeleft(milliseconds,uuid) {
-        milliseconds = parseInt(milliseconds);
-                const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                if(milliseconds - Date.now() <= 0)return "Auktion beendet am " + new Date((milliseconds)).toLocaleDateString(undefined,options);
-              
-                if ( milliseconds - Date.now() > 86400000) return new Date(milliseconds).toLocaleDateString(undefined, options);
-                
-                const now = Date.now();
-                const remainingTime = milliseconds - now;
-                let h = Math.floor(remainingTime / 3600000);
-                let m = Math.floor((remainingTime % 3600000) / 60000);
-                let s = Math.floor((remainingTime % 60000) / 1000);
-                return `${h} Stunden ${m} Minuten ${s} Sekunden`;
-            }
-            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-            function setTime(milliseconds,uuid){
-              const countdown = setInterval(() => {
-                const timerElement = document.getElementById(`timer-`+uuid);
-                if ((milliseconds - Date.now()) < 0) {
-                          clearInterval(countdown);
-                          timerElement.innerText = timeleft(milliseconds,uuid)
-                      }
-              
-              timerElement.innerText =timeleft(milliseconds,uuid)
-              },1000);
-            }
-         
-      </script>
+    <script src="../src/public/javascript/timeleft.js"></script>
 </head>
 <body class="flex flex-col  h-screen">
 

@@ -59,6 +59,9 @@ const LoginShema = new mongoose.Schema({
      verify:{
         type:Boolean,    
 
+     },
+     admin:{
+        type:Boolean,
      }
 });
 

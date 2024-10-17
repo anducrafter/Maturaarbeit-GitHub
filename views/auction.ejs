@@ -6,7 +6,8 @@
     <title>Auktion</title>
    
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCuazAbAcn-qgJww5gop-mXipNL7Bmjo3o&libraries=places"></script>
+    <script src="/api/maps"></script>
+    <script src="/javascript/timeleft.js"></script>
     <script>
       let map;
       let marker;
@@ -17,7 +18,8 @@
                 center: { lat: 46.8182, lng: 8.2275 }, // Center of Switzerland
                 zoom: 7,
             });
-            showGemeindeLocation("<%=user.address%>");
+            showGemeindeLocation("<%=creator.address%>");
+            
         }
 
         function showGemeindeLocation(address) {
@@ -59,14 +61,14 @@
                                     title: gemeinde,
                                 });
                             } else {
-                                alert("Geocode was not successful for the following reason: " + status);
+                               
                             }
                         });
                     } else {
-                        alert("Gemeinde information could not be found.");
+                       
                     }
                 } else {
-                    alert("Geocode was not successful for the following reason: " + status);
+                   
                 }
             });
         }
@@ -94,7 +96,7 @@
       </button>
     </a>
   <% } %>
-
+  
  
   <!-- Main Content -->
   <div class="flex-grow flex justify-center items-start py-6 bg-gray-100">
@@ -136,15 +138,25 @@
 
         <!-- Timer -->
         <div id="timer-<%= auction._id %>" class="text-gray-700 text-lg">Time left:</div>
-
+        <script>
+          setTime("<%= auction.timestamp %>", "<%= auction._id %>");
+        </script>
         <!-- Auction Info -->
-        <h4 class="text-lg font-semibold">Startgebot: <%= auction.startbit %></h4>
-        <h4 class="text-lg">Beschreibung: <%= auction.description %></h4>
-        <h4 class="text-sm">Ersteller: <%= auction.creator %></h4>
+        <h4 class="text-lg font-semibold">Gebot: <%= auction.startbit %></h4>
+        <h4 class="text-lg"><%= auction.description %></h4>
+        <div class="flex items-center m-5 ">
+          <a href="/user/<%= auction.creator %>">
+            <img class="w-16 h-16 rounded-full mr-4" src="/uploads/<%=creator.img%>" alt="user photo">
+          </a>
+         
+          <h4 class="text-sm">Ersteller: <%= auction.creator %></h4>
+          </div>
+
 <!-- Auktion Standort-->
 <div id="map"></div>
         <!-- Bidding History -->
         <div class="space-y-2">
+          <p>Gebots History</p>
           <% auction.bithistory.reverse().forEach(history => { %>
             <div class="text-sm border-b border-gray-200 pb-2">
               <h4 class="font-medium"><%= history.name %></h4>
@@ -176,31 +188,6 @@
     });
   </script>
 
-  <script>
-    function timeleft(milliseconds) {
-      milliseconds = parseInt(milliseconds);
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-      if (milliseconds - Date.now() > 86400000) return "Endet am " + new Date(milliseconds).toLocaleDateString(undefined, options);
 
-      const now = Date.now();
-      const remainingTime = milliseconds - now;
-      let h = Math.floor(remainingTime / 3600000);
-      let m = Math.floor((remainingTime % 3600000) / 60000);
-      let s = Math.floor((remainingTime % 60000) / 1000);
-      return "Endet in " + `${h} Stunden ${m} Minuten ${s} Sekunden`;
-    }
-
-    let time = '<%= auction.timestamp %>';
-    const timerElement = document.getElementById(`timer-<%= auction._id %>`);
-
-    const countdown = setInterval(() => {
-      if ((time - Date.now()) <= 0) {
-        clearInterval(countdown);
-        timerElement.innerText = "Auktion fertig";
-      } else {
-        timerElement.innerText = timeleft(time);
-      }
-    }, 1000);
-  </script>
 </body>
 </html>

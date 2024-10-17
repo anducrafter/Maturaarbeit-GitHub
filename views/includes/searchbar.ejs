@@ -33,20 +33,18 @@
       <!-- Filter and Sort Section -->
       <%if(suchen == true){%>
       <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6">Filter and Sort by Price</h1>
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Filter und sortieren</h1>
   
         <!-- Price Filter -->
          
         <div class="mb-6">
-          <h1><%=price.max%></h1>
-          <label for="priceRange" class="block text-gray-700 font-medium mb-2">Maximaler Preis</label>
           <input type="range" id="priceRange" min="0" max="<%=price.max%>" value="<%=price.price || 100%>" class="w-full appearance-none bg-gray-200 rounded-lg h-2 mb-2 cursor-pointer" onchange="updatePriceLink(this.value)" oninput="updatePrice(this.value)">
           <p class="text-gray-800">Maximaler Preis: <span id="priceDisplay" class="font-bold"><%=price.price || price.max%> CHF</span></p>
         </div>
   
         <!-- Sort Options -->
         <div>
-          <label for="sort" class="block text-gray-700 font-medium mb-2">sorteiren</label>
+          <label for="sort" class="block text-gray-700 font-medium mb-2">sortieren</label>
           <select onchange="sortToLink()" id="sort" class="w-full p-3 border border-gray-300 bg-white text-gray-800 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300 ease-in-out" onchange="sortProducts()">
             <option value="" selected>Sortieren nach</option>
             <option value="1">Preis: aufsteigend</option>
@@ -104,10 +102,6 @@
 
 
 
-
-
-
-
     <script>
 
 // Get the current URL
@@ -123,7 +117,9 @@ if (currentPath !== "/") {
 }
 
       document.getElementById('searchbutton').addEventListener('click', function() {
-        const url = new URL(window.location.href);
+        //Diese URL muss ich dringen später noch zu Repli machen
+        const url = new URL("http://localhost:5000/s/");
+        console.log(url)
  // Get the input element by its ID
  var inputElement = document.getElementById('search');
 

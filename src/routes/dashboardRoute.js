@@ -15,10 +15,7 @@ router.get("/dashboard/:type", auth.isAuthenticated, async (req,res) =>{
         const userauctions = user.auctions || [];
         if(req.params.type == "offers"){
             const auction = await auctioncollection.find({_id: {$in : userauctions}, timestamp: {$gt: time}});
-          
             res.render('dashboard/user/userauction', { auctions: auction, type :req.params.type , login : req.session.user, user: user});
-
-          
         }else if (req.params.type == "wins"){
             const auction = await auctioncollection.find({_id: {$in : userauctions}, biter: req.session.user, timestamp: {$lt: time}});
             console.log("tesrt 1");
@@ -86,15 +83,7 @@ router.get("/dashboard/c/aufinish/:id", auth.isAuthenticated, async (req,res) =>
 router.post("/aufinish/u/:id", auth.isAuthenticated , async(req,res) =>{
     const auction =  await auctioncollection.findOne({_id: req.params.id});
     let status = auction.status;
-    if(status == 4){
-      console.log("Auktion schon abgeschlossen");
-      return;  
-    }
-    if(status == 2){
-
-        console.log("Auktion muss lieferant fertig");
-        return;
-    }
+    if(status != 1)return;
 
     status++;
     await auctioncollection.updateOne({_id: req.params.id},{$set: {status: status}})

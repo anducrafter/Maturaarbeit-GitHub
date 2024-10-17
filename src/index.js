@@ -17,6 +17,9 @@ const registerroute = require("./routes/registerRoute")
 const createroute = require("./routes/createRoute")
 const userroute = require("./routes/userRoute")
 const userlistroute = require("./routes/userlistRoute.js");
+const googleroute = require("./routes/googleApi.js");
+//load the  .env Datei
+
 const app = express();
 
 
@@ -87,32 +90,7 @@ const transporter = nodemailer.createTransport({
   app.use("/",createroute)
   app.use("/",userroute)
   app.use("/",userlistroute)
-
-/*
-app.get("/category/:id",async (req,res) =>{
-   
-    try{
-        const auction = await auctioncollection.find({categorique: req.params.id});
-       
-        res.render('category', { auctions: auction , login : req.session.user});
-        
-    }catch(err){
-        console.log(err)
-    }
-    
-})*/
-
-
-//Ist ein proversorium um css zu laden
-app.get("/src/public/css/:id",(req,res) =>{
-    fs.readFile(__dirname + '/public/css/'+req.params.id, function (err, data) {
-        if (err) console.log(err);
-        res.writeHead(200, {'Content-Type': 'text/css'});
-        res.write(data);
-        res.end();
-      });
-      
-})
+  app.use("/",googleroute)
 
 app.get("/test" , async(req,res) =>{
 res.render("test", {gaming: "gaming"});

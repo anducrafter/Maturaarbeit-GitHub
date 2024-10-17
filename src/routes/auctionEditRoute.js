@@ -26,12 +26,15 @@ router.post("/au/edit/:id",multer.upload, auth.isAuthenticated, async(req,res) =
     try{
        const auction =  await auctioncollection.findOne({_id: req.params.id});
        if(auction == undefined){
+        res.redirect("/")
         return;
        }
        if(auction.creator != req.session.user){
+        res.redirect("/")
         return;
        }
-       if(auction.timestamp <= Date.now()){ res.send("auction schon vorbei"); 
+       if(auction.timestamp <= Date.now()){ 
+        res.redirect("/")
         return;
        }
        let title = req.body.titel;
@@ -44,7 +47,6 @@ router.post("/au/edit/:id",multer.upload, auth.isAuthenticated, async(req,res) =
         picture.push(img.filename);
        })
 
-       console.log("bishier gings ;D")
        if(req.body.startbit != undefined){
 
         startbit = req.body.startbit;

@@ -7,19 +7,11 @@ const auth = require("../public/javascript/auth");
 router.get("/au/:id", async (req,res) =>{
    
     try{
-
-      
         const auction =  await auctioncollection.findOne({_id: req.params.id});
         const user = await collection.findOne({name: req.session.user}) || false
-        
-        let query = req.query;
-       
-        if (Object.keys(req.query).length === 0){
-            query = "";
-        }else {
-          query = "?"+req.originalUrl.split('?')[1];
-        }
-        res.render('auction', { auction: auction, id: req.params.id, login : req.session.user , query : query, user: user, API: process.env.API, suchen: false});
+        const creator = await collection.findOne({name: auction.creator});
+        const queryString = "?"+ new URLSearchParams(req.query).toString();
+        res.render('auction', { auction: auction, id: req.params.id, creator: creator , login : req.session.user , query : queryString, user: user, API: process.env.API, suchen: false});
         
     }catch(err){
         console.log(err)
@@ -37,7 +29,6 @@ router.post("/au/:id", auth.isAuthenticated, async(req,res) =>{
      const newbit = req.body.newbit;
  
    if(newbit > bit){
-    const biter =  auction.biter;
     const newbiter = req.session.user;
     const history = auction.bithistory;
     history.push({name: req.session.user, bit: newbit})
@@ -45,17 +36,12 @@ router.post("/au/:id", auth.isAuthenticated, async(req,res) =>{
     if(auction.timestamp <= Date.now()+300000){
        auction.timestamp+= 180000; //füge noch 3 Minuten hinzu
     }
-       const auctionupdate = await auctioncollection.updateOne({_id: req.params.id},{$set: {startbit: newbit, biter: newbiter, bithistory: history, timestamp: auction.timestamp}})
+       await auctioncollection.updateOne({_id: req.params.id},{$set: {startbit: newbit, biter: newbiter, bithistory: history, timestamp: auction.timestamp}})
        const user = await collection.findOne({name: req.session.user})
        const at  =user.auctions;
-     if(at == ""){
+    if(!at.includes(req.params.id)){
         at.push(req.params.id);
-     }else if(!at.includes(req.params.id)){
-        at.push(req.params.id);
-        console.log("tesrt 1")
      }
-
-     console.log(at)
       await collection.updateOne({name: req.session.user}, {$set : {auctions:  at}})
        res.redirect("/au/"+ req.params.id)
    }

@@ -33,11 +33,7 @@
       
       <!-- Buyer Details -->
       <div class="flex items-center mb-4">
-        <% if (buyer && buyer.img) { %>
           <img class="w-16 h-16 rounded-full mr-4" src="/uploads/<%=buyer.img%>" alt="user photo">
-        <% } else { %>
-          <img class="w-16 h-16 rounded-full mr-4" src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" alt="user photo">
-        <% } %>
         <div>
           <h2 class="text-lg font-bold"><%= buyer.name %></h2>
           <h1 class="text-gray-800">Email</h1>
@@ -59,7 +55,7 @@
             Geliefert
           </button>
         <% } else if (auctions.status == 1) { %>
-          <h1 class="text-xl  text-gray-600">Auktion ist Abgeschlossen</h1>
+          <h1 class="text-xl  text-gray-600">Warte auf Bezhalung des Käufers</h1>
         <% } else if (auctions.status == 3) { %>
           <h1 class="text-xl  text-gray-600">Auktion ist Abgeschlossen</h1>
         <% } else { %>

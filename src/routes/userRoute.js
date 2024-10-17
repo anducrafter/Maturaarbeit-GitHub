@@ -6,11 +6,10 @@ const evaluatecollection = require("../collection/config-img");
 const auth = require("../public/javascript/auth");
 const javamulter = require("../public/javascript/multer");
 
-router.get("/user", auth.isAuthenticated, async (req,res) =>{
+router.get("/user/:id", auth.isAuthenticated, async (req,res) =>{
     try{
-        const user =  await collection.findOne({name: req.session.user});
-        const evaluation = await evaluatecollection.find({name: req.session.user});
-        console.log(evaluation)
+        const user =  await collection.findOne({name: req.params.id});
+        const evaluation = await evaluatecollection.find({name: req.params.id});
         res.render('user', {user: user, login: req.session.user, evaluation : evaluation});
         
     }catch(err){
