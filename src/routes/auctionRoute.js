@@ -23,11 +23,18 @@ router.post("/au/:id", auth.isAuthenticated, async(req,res) =>{
     
     try{
        const auction =  await auctioncollection.findOne({_id: req.params.id});
-       if(auction.timestamp <= Date.now()){ res.send("auction schon vorbei"); return;}
+       if(auction.timestamp <= Date.now()){ 
+        res.redirect("/au/"+ req.params.id)
+        return;}
+
        
      const bit = auction.startbit;
      const newbit = req.body.newbit;
  
+     if(auction.creator = req.session.user){
+        //Man selber kann nicht draufbieten
+       return res.redirect("/au/"+ req.params.id)
+     }
    if(newbit > bit){
     const newbiter = req.session.user;
     const history = auction.bithistory;

@@ -22,11 +22,7 @@ const googleroute = require("./routes/googleApi.js");
 const app = express();
 //load the  .env Datei
 
-//connect zur MongoDB
 
-
-//Localhost geht nicht :( hat mich ne hable stunde gekostet xD # (30.8.24 rückblickend nach 3 Monaten ist eine halbe Stunde gar nicht viel.)
-//Database muss mit 127.0.0.1 connected werden
 
 
 app.use(session({
@@ -68,6 +64,11 @@ app.use(cookieParser());
 const port = 5000
 app.listen(port, () =>{
     //connect to MognodB
+    //connect zur MongoDB
+
+
+//Localhost geht nicht :( hat mich ne hable stunde gekostet xD # (30.8.24 rückblickend nach 3 Monaten ist eine halbe Stunde gar nicht viel.)
+//Database muss mit 127.0.0.1 connected werden
     const connect = mongoose.connect("mongodb://127.0.0.1:27017/Repli")
     connect.then(() =>{
         console.log("Database erfolgreich connectred")
