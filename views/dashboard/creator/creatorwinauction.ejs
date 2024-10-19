@@ -4,37 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script> 
-        function timeleft(milliseconds,_id) {
-          milliseconds = parseInt(milliseconds);
-                  const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                  if(milliseconds - Date.now() <= 0)return "Auktion beendet am " + new Date((milliseconds)).toLocaleDateString(undefined,options);
-                
-                  if ( milliseconds - Date.now() > 86400000) return new Date(milliseconds).toLocaleDateString(undefined, options);
-                  
-                  const now = Date.now();
-                  const remainingTime = milliseconds - now;
-                  let h = Math.floor(remainingTime / 3600000);
-                  let m = Math.floor((remainingTime % 3600000) / 60000);
-                  let s = Math.floor((remainingTime % 60000) / 1000);
-                  return `${h} Stunden ${m} Minuten ${s} Sekunden`;
-              }
-              const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-              function setTime(milliseconds,_id){
-                const timerElement = document.getElementById(`timer-`+_id);
-                timerElement.innerText =timeleft(milliseconds,_id)
-                const countdown = setInterval(() => {
-                  
-                  if ((milliseconds - Date.now()) < 0) {
-                            clearInterval(countdown);
-                            timerElement.innerText = timeleft(milliseconds,_id)
-                        }
-                
-                timerElement.innerText =timeleft(milliseconds,_id)
-                },1000);
-              }
-           
-        </script>
+    <script src="/javascript/timeleft.js"></script>
 </head>
 <body class="flex flex-col  h-screen">
     <%- include('../../includes/header.ejs') %>
@@ -78,7 +48,7 @@
                 <%}else {%>
                   <td class="px-4 py-2 text-gray-600">Kein Käufer gefunden</td>
                   <td class="px-4 py-2">
-                    <form action="/dashboard/<%= auc._id %>" method="post">
+                    <form action="/dashboard/longer/<%= auc._id %>" method="post">
                       <button class="bg-red-500 hover:bg-purple-600  text-white font-bold py-2 px-4 rounded-full text-xs sm:text-sm lg:text-base">
                        Verlängern
                       </button>

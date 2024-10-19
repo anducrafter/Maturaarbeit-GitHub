@@ -8,48 +8,31 @@
 <body>
                 
     <section style="max-width: 42rem; padding: 2rem 1.5rem; margin: 0 auto; background-color: #ffffff; background-color: var(--color-gray-900);">
-        <header>
-            <a href="#">
-                <img style="width: auto; height: 1.75rem; height: var(--sm-h-8);" src="https://merakiui.com/images/full-logo.svg" alt="">
-            </a>
-        </header>
     
         <main style="margin-top: 2rem;">
-            <h2 style="color: #4a5568; color: var(--color-gray-200);">Hallo Andreas,</h2>
-    
-            <p style="margin-top: 0.5rem; line-height: 1.625; color: #718096; color: var(--color-gray-300);">
-                This is your verification code:
-            </p>
-    
+            <h2 style="color: #4a5568; color: var(--color-gray-200);">Hallo <%=name %>,</h2>
             <div style="display: flex; align-items: center; margin-top: 1rem; gap: 1rem;">
-                <p style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; font-size: 1.5rem; font-weight: 500; color: #3b82f6; border: 1px solid #3b82f6; border-radius: 0.375rem; color: var(--color-blue-400); border-color: var(--color-blue-400);">6</p>
-                <p style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; font-size: 1.5rem; font-weight: 500; color: #3b82f6; border: 1px solid #3b82f6; border-radius: 0.375rem; color: var(--color-blue-400); border-color: var(--color-blue-400);">2</p>
-                <p style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; font-size: 1.5rem; font-weight: 500; color: #3b82f6; border: 1px solid #3b82f6; border-radius: 0.375rem; color: var(--color-blue-400); border-color: var(--color-blue-400);">8</p>
-                <p style="display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; font-size: 1.5rem; font-weight: 500; color: #3b82f6; border: 1px solid #3b82f6; border-radius: 0.375rem; color: var(--color-blue-400); border-color: var(--color-blue-400);">9</p>
+                <a href="localhost:5000/loginauth/<%=id%>/<%= name %>">Verifylink</a>
             </div>
-    
-            <p style="margin-top: 1rem; line-height: 1.625; color: #718096; color: var(--color-gray-300);">
-                This code will only be valid for the next 5 minutes. If the code does not work, you can use this login verification link:
-            </p>
+            <a href="http://localhost:5000/loginauth/<%=id%>/<%= name %>">
+                <button style="padding: 0.5rem 1.5rem; margin-top: 1.5rem; font-size: 0.875rem; font-weight: 500; text-transform: capitalize; background-color: #3b82f6; border-radius: 0.5rem; color: #ffffff; transition: background-color 0.3s ease; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);">
+                    Veryfy Email
+                </button>
+                </a>
             
-            <button style="padding: 0.5rem 1.5rem; margin-top: 1.5rem; font-size: 0.875rem; font-weight: 500; text-transform: capitalize; background-color: #3b82f6; border-radius: 0.5rem; color: #ffffff; transition: background-color 0.3s ease; outline: none; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);">
-                Verify email
-            </button>
+ 
             
             <p style="margin-top: 2rem; color: #718096; color: var(--color-gray-300);">
-                Thanks, <br>
-                Meraki UI team
+                Vielen Dank, <br>
+                Repli.ch
             </p>
         </main>
-        
-    
         <footer style="margin-top: 2rem;">
             <p style="color: #a0aec0; color: var(--color-gray-400);">
-                This email was sent to <a href="#" style="color: #3b82f6; text-decoration: underline; color: var(--color-blue-400);" target="_blank">contact@merakiui.com</a>. 
-                If you'd rather not receive this kind of email, you can <a href="#" style="color: #3b82f6; text-decoration: underline; color: var(--color-blue-400);">unsubscribe</a> or <a href="#" style="color: #3b82f6; text-decoration: underline; color: var(--color-blue-400);">manage your email preferences</a>.
+                Weitere Infos? <a href="#" style="color: #3b82f6; text-decoration: underline; color: var(--color-blue-400);" target="_blank">admin@repli.ch</a>.  
             </p>
     
-            <p style="margin-top: 0.75rem; color: #a0aec0; color: var(--color-gray-400);">© {{ new Date().getFullYear() }} Meraki UI. All Rights Reserved.</p>
+            <p style="margin-top: 0.75rem; color: #a0aec0; color: var(--color-gray-400);">© Repli.ch. All Rights Reserved.</p>
         </footer>
     </section>
     

@@ -5,6 +5,7 @@ const session = require("express-session");
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const flash = require("express-flash")
+const mongoose = require("mongoose");
 //rooters
 const indexroot = require("./routes/indexRoute")
 const auctionroute = require("./routes/auctionRoute")
@@ -18,9 +19,14 @@ const createroute = require("./routes/createRoute")
 const userroute = require("./routes/userRoute")
 const userlistroute = require("./routes/userlistRoute.js");
 const googleroute = require("./routes/googleApi.js");
+const app = express();
 //load the  .env Datei
 
-const app = express();
+//connect zur MongoDB
+
+
+//Localhost geht nicht :( hat mich ne hable stunde gekostet xD # (30.8.24 rückblickend nach 3 Monaten ist eine halbe Stunde gar nicht viel.)
+//Database muss mit 127.0.0.1 connected werden
 
 
 app.use(session({
@@ -31,8 +37,6 @@ app.use(session({
 })); 
 
 //Viw engine test
-
-
 app.set("view engine","ejs")
 app.set('views', path.join(__dirname, '..', 'views'))
 //Daten werdfen in Json übergeben
@@ -40,45 +44,14 @@ app.set('views', path.join(__dirname, '..', 'views'))
 app.use(express.json());
 app.use(flash())
 
-
 app.use(express.urlencoded({ extended: false }));
 
-//Wieso geht das ned ?
+//Wieso geht das ned ? //geht nun
 app.use( express.static(path.join(__dirname, 'public')));
 
-
-//Node emailer
-const transporter = nodemailer.createTransport({
-    //service: "gmail",
-    host: "smtp.freesmtpservers.com",
-    port: 25,
-    secure: false, // Use `true` for port 465, `false` for all other ports
-   
-  });
-
-  const mailOption = {
-    from: {
-        name: "anducrafter",
-        address: "buisnesserwan@gmail.com"
-    },
-    to: "andusucht@gmail.com",
-    subject: "Hello how are you?",
-    text: "Hello world",
-    html: "<h1> My fist sending email </h1>"
-  }
-
-  const sendMail = async (transporter,mailOption) =>{
-    try{
-        await transporter.sendMail(mailOption);
-        console.log("Email sended succecfully")
-    }catch (err){
-        console.log(err)
-    }
-  }
-  app.use(cookieParser());
+app.use(cookieParser());
   
   //Now add the Rooters
-
   app.use("/",indexroot)
   app.use("/",auctionroute)
   app.use("/",auctioneditroute)
@@ -92,14 +65,15 @@ const transporter = nodemailer.createTransport({
   app.use("/",userlistroute)
   app.use("/",googleroute)
 
-app.get("/test" , async(req,res) =>{
-res.render("test", {gaming: "gaming"});
-})
-
-
 const port = 5000
 app.listen(port, () =>{
-  
+    //connect to MognodB
+    const connect = mongoose.connect("mongodb://127.0.0.1:27017/Repli")
+    connect.then(() =>{
+        console.log("Database erfolgreich connectred")
+    }).catch(() =>{
+        console.log("Database nicht connected");
+    })
+    console.log("Repli.ch")
     console.log('Server is running on Port:',port);
-   
 })

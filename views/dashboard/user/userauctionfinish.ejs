@@ -11,10 +11,10 @@
 
     <main class="container mx-auto p-4">
 
-      <!-- Auction Cards Grid -->
+    
       <div class="auction-cards grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center mb-5">
         
-        <!-- Single Auction Card -->
+       
         <div class="card bg-white shadow-md rounded-lg p-3 flex flex-col items-center">
           <a href="/au/<%= auctions._id%>" class="mb-4 w-full">
             <div class="w-full h-64 flex items-center justify-center overflow-hidden rounded-lg">
@@ -28,11 +28,11 @@
     
       </div>
     
-      <!-- Seller Information -->
+     
       <div class="bg-gray-100 p-5 rounded-lg shadow-md">
         <h1 class="text-2xl font-semibold text-gray-800 mb-4">Bitte kontaktiere den Verkäufer um möglichst schnell die Ware zu bezahlen</h1>
         
-        <!-- Seller Details -->
+       
         <div class="flex items-center mb-4">
          
             <img class="w-16 h-16 rounded-full mr-4" src="/uploads/<%=creator.img%>" alt="user photo">
@@ -49,12 +49,12 @@
         </div>
 
 
-        <!-- Auction Status -->
+        
         <p class="font-medium text-purple-600 mb-4">
           <%= auctions.status == 1 ? "Noch zu Bezahlen" : auctions.status == 2 ? "Bezahlt" : auctions.status == 3 ? "Gesendet" : "Abgeschlossen" %>
         </p>
     
-        <!-- Action Button -->
+    
         <form action="/aufinish/u/<%= auctions._id%>" method="post">
           <% if (auctions.status == 1) { %>
             <button class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-full">
@@ -117,12 +117,12 @@
     <%- include('../../includes/footer.ejs') %>
 
     <script>
-      // Handle star rating hover and click
+      
       const stars = document.querySelectorAll('#starRating .star');
       const ratingInput = document.getElementById('rating');
     
       stars.forEach((star, index) => {
-        // Hover effect: Make current star and all previous stars yellow
+       
         star.addEventListener('mouseover', function () {
           stars.forEach((s, i) => {
             if (i <= index) {
@@ -143,8 +143,8 @@
             }
           });
         });
-    
-        // Click event to set the rating
+   
+        
         star.addEventListener('click', function () {
           ratingInput.value = index + 1;
           stars.forEach((s, i) => {

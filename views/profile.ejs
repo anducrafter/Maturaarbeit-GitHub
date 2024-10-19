@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8172733867320668"
+    crossorigin="anonymous"></script>
     <style>
       #suggestions {
           border: 1px solid #ccc;
@@ -58,21 +59,9 @@
 </head>
 <body onload="initAutocomplete()">
     <%- include('includes/header.ejs') %>
-  
-
-    <h1>Deine Einstellungen</h1>
-
-    <h2><%= user.name%></h2>
-    <h2><%= user.email%></h2>
-    <h2><%= user.address%></h2>
-    <h2><%= user.phone%></h2>
-    <h2><%= user.about%></h2>
-
-
-
     <form action="/profile" method="POST" enctype="multipart/form-data" class="space-y-4">
         <div class=" p-10">
-          <h2 class="text-lime-500 text-xl font-semibold mb-2">Bild</h2>
+        
 
           <label 
           id="image-label"
@@ -85,7 +74,7 @@
           <input type="file" name="image" class="hidden" id="image-input" accept="image/*" > 
         </label>
         <div>
-          <h2 class="text-green-500 text-xl font-semibold mb-2">Telepone nummer</h2>
+          <h2 class="text-green-500 text-xl font-semibold mb-2">Telefonnummer</h2>
           <input type="tel" name="phone" value="<%=user.phone%>" class="w-full border border-gray-300 rounded-md p-3 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 transition resize-none" > 
         </div>
 

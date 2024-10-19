@@ -10,7 +10,7 @@ router.get("/dashboard/:type", auth.isAuthenticated, async (req,res) =>{
 
         const user = await collection.findOne({name: req.session.user})
         const time = new Date().getTime();
-        console.log(user.create)
+       
         const createauction = user.create || [];
         const userauctions = user.auctions || [];
         if(req.params.type == "offers"){
@@ -18,7 +18,7 @@ router.get("/dashboard/:type", auth.isAuthenticated, async (req,res) =>{
             res.render('dashboard/user/userauction', { auctions: auction, type :req.params.type , login : req.session.user, user: user});
         }else if (req.params.type == "wins"){
             const auction = await auctioncollection.find({_id: {$in : userauctions}, biter: req.session.user, timestamp: {$lt: time}});
-            console.log("tesrt 1");
+           
             res.render('dashboard/user/userwinauction', { auctions: auction, type: req.params.type, login : req.session.user, user: user});
 
         }else if( req.params.type == "auctions"){
@@ -29,13 +29,27 @@ router.get("/dashboard/:type", auth.isAuthenticated, async (req,res) =>{
             const auction = await auctioncollection.find({_id: {$in : createauction}, timestamp: {$lt: time}});
             res.render('dashboard/creator/creatorwinauction', { auctions: auction, type: req.params.type, login : req.session.user, user: user});
         }
-     
+        
         
     }catch(err){
         console.log(err)
     }
     
 })
+
+router.post("/dashboard/longer/:id", auth.isAuthenticated , async (req,res) =>{
+    const user = await collection.findOne({name: req.session.user})
+    const time = new Date().getTime();
+    const auctions = user.create || [];
+        if(auctions.includes(req.params.id)){
+            console.log("yes1")
+            const auction = await auctioncollection.find({_id: req.query.id});
+            auction.timestamp = time + 3600*1000*24*7; //add 7 days
+            await auctioncollection.updateOne(auction);
+        }
+        console.log("yes")
+       res.redirect("/dashboard/sell")
+});
 
 router.get("/dashboard/u/aufinish/:id", auth.isAuthenticated, async (req,res) =>{
    
@@ -47,7 +61,7 @@ router.get("/dashboard/u/aufinish/:id", auth.isAuthenticated, async (req,res) =>
       
         if(auction.biter != req.session.user && auction.timestamp < date.getTime()) {
             const auction =  await auctioncollection.find({});
-            res.render("index",{auctions: auction})
+           return res.render("index",{auctions: auction})
         }
         const creator = await collection.findOne({name: auction.creator})
         res.render('dashboard/user/userauctionfinish', { auctions: auction,creator: creator, login : req.session.user, user : user});

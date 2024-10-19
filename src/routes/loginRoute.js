@@ -16,6 +16,27 @@ router.get("/out" , async (req,res) =>{
         res.redirect("/");
 })
 
+
+
+router.get("/loginauth/:id/:user" , async (req,res) =>{
+    const id = req.params.id;
+    const username = req.params.user;
+    const user = await collection.findOne({name: username});
+    console.log("gmaing v3")
+    if(!user){
+        console.log("gmaing v2")
+        res.redirect("/");
+    }
+    if(user.verifyid != id){
+        console.log("gmaing v2",user.id,id)
+        res.redirect("/");
+    }
+    user.verify = true;
+    await collection.updateOne(user);
+    res.redirect("/login");
+
+})
+
 router.post("/login" ,async (req,res) =>{
     try{ 
         const data={
@@ -27,11 +48,14 @@ router.post("/login" ,async (req,res) =>{
         
         if(!user){
             req.flash("error","Falsches Passwort oder kein Benutzer");
-           
+            return  res.redirect("/login");
+        }
+        if(user.verify = false){
+            req.flash("error","Account ist nicht verifiziert ");
             return  res.redirect("/login");
         }
         const passwordis = await bycript.compare(data.password,user.password);
-        
+
         if(!passwordis){
             req.flash("error","Falsches Passwort oder kein Benutzer");
             return  res.redirect("/login");
