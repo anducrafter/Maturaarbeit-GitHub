@@ -1,3 +1,4 @@
 Hello, dear readers
 
-This is my first time using GitHub, thanks for supporting
+This is my first project with node.js and express.
+This project is for my maturapaper. 
