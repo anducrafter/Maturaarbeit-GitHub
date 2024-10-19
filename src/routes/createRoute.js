@@ -20,7 +20,7 @@ router.post("/create", multer.upload, auth.isAuthenticated,async (req,res) =>{
             time: req.body.time,
             categorique: req.body.options
         }
-
+        
         const aution = new auctioncollection();
         aution.titel = data.titel;
         aution.description = data.description;
@@ -29,11 +29,11 @@ router.post("/create", multer.upload, auth.isAuthenticated,async (req,res) =>{
         aution.bithistory = []
         aution.categorique = data.categorique;
         aution.status = 1;
-        const datee = new Date();
+        const date = new Date();
         
 
-       // days now in minutes aution.timestamp = date.getTime()+1000 * 60 * 60 * 24 *data.time;
-         aution.timestamp = datee.getTime()+1000 * 60 * data.time;
+        aution.timestamp = date.getTime()+1000 * 60 * 60 * 24 *data.time;
+     //das hier ist für testphase    aution.timestamp = datee.getTime()+1000 * 60 * data.time;
         aution.biter = "";
     
    req.files.forEach((image, index) =>{

@@ -44,10 +44,10 @@
     </nav>
   </div>
   <script>
-    // Total number of pages (for example, you can fetch this from the server)
-    const totalPages = Math.ceil('<%=lenght%>'); // Example: Assume there are 25 total pages.
+    // Total number of pages (fetch this from the server)
+    const totalPages = Math.ceil('<%= lenght %>'); // Example: Assume there are 25 total pages.
     const maxVisiblePages = 10; // Max number of page links to show
-  
+  console.log(totalPages,length)
     // Get the current page from the URL query parameter
     const urlParams = new URLSearchParams(window.location.search);
     let currentPage = parseInt(urlParams.get('page')) || 1; // Defaults to page 1 if no query
@@ -56,6 +56,13 @@
     function createPagination() {
       const paginationContainer = document.getElementById('pagination');
       paginationContainer.innerHTML = ''; // Clear existing pagination
+
+      // Handle the case where there are no pages
+      if (totalPages === 0) {
+     
+       
+        return; // Stop pagination generation
+      }
   
       // Ensure the current page is within a valid range
       if (currentPage < 1) currentPage = 1;
